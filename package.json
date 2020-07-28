@@ -1,0 +1,36 @@
+{
+  "name": "awoo",
+  "version": "1.0.0",
+  "description": "simple rpg game",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zachung/awoo.git"
+  },
+  "keywords": [
+    "awoo"
+  ],
+  "author": "zachung",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zachung/awoo/issues"
+  },
+  "homepage": "https://github.com/zachung/awoo#readme",
+  "dependencies": {
+    "awoo-core": "github:zachung/awoo-core"
+  },
+  "devDependencies": {
+    "css-loader": "^4.0.0",
+    "hotkeys-js": "^3.8.1",
+    "style-loader": "^1.2.1",
+    "vue": "^2.6.11",
+    "vue-loader": "^15.9.3",
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.44.0",
+    "webpack-cli": "^3.3.12"
+  }
+}
