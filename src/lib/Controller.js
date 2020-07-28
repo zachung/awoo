@@ -1,5 +1,8 @@
 import hotkeys from 'hotkeys-js'
 
+/**
+ * @property {Item} item
+ */
 class Controller {
   constructor (item, options = {}) {
     this.item = item
@@ -32,7 +35,7 @@ class Controller {
 
   move (dx, dy) {
     const item = this.item
-    item.move(item.location.x + dx, item.location.y + dy)
+    item.move(item.globalX + dx, item.globalY + dy)
   }
 }
 

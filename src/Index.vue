@@ -6,11 +6,15 @@
           v-for="(item, y) in row"
           class="tile"
           :style="{ color: item.color, 'background-color': item.bgColor }"
-          :x="x"
-          :y="y"
+          :data-x="item.globalX"
+          :data-y="item.globalY"
+          :data-chunk="item.chunk ? item.chunk.chunkName : ''"
+          @click="changeSymbol(item)"
+          v-if="item"
         >
           {{ item.symbol }}
         </div>
+        <div class="tile" v-else></div>
       </template>
     </div>
     <div class="dashboard">
@@ -18,7 +22,7 @@
         {{ game.player.chunk.chunkName }}
       </div>
       <div v-if="game.player">
-        {{ game.player.location.x }}, {{ game.player.location.y }}
+        {{ game.player.globalX }}, {{ game.player.globalY }}
       </div>
     </div>
   </div>
@@ -37,7 +41,8 @@ export default {
     })
     return {
       game: game,
-      viewSize
+      viewSize,
+      isEdit: true
     }
   },
   computed: {
@@ -47,6 +52,14 @@ export default {
         'grid-template-rows': 'repeat(' + this.viewSize + ', 1em)',
         'grid-template-columns': 'repeat(' + this.viewSize + ', 1em)'
       }
+    }
+  },
+  methods: {
+    changeSymbol(item) {
+      if (!this.isEdit) {
+        return
+      }
+      item.symbol = 'clicked'
     }
   },
   mounted() {

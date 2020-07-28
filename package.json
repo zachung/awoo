@@ -1,6 +1,6 @@
 {
   "name": "awoo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "simple rpg game",
   "main": "src/index.js",
   "scripts": {

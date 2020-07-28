@@ -27,7 +27,8 @@ class Game {
 
   addPlayer ({ x, y }) {
     const player = new Item(Symbols.Items[0])
-    player.location = { x, y }
+    player.x = x
+    player.y = y
     return this.stage.cameraGoTo(x, y)
       .then(() => {
         this.stage.chunk.addItem(player)
@@ -39,7 +40,7 @@ class Game {
   startRender () {
     // timer for render
     setInterval(() => {
-      this.stage.cameraGoTo(this.player.location.x, this.player.location.y)
+      this.stage.cameraGoTo(this.player.globalX, this.player.globalY)
         .catch(status => {
           if (status === 404) {
             console.log('Map limited')
