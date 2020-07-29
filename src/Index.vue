@@ -1,74 +1,70 @@
 <template>
-  <div class="container">
-    <div id="world" :style="worldStyle">
-      <template v-for="(row, x) in game.stage.map" class="tile">
-        <div
-          v-for="(item, y) in row"
-          class="tile"
-          :style="{ color: item.color, 'background-color': item.bgColor }"
-          :data-x="item.globalX"
-          :data-y="item.globalY"
-          :data-chunk="item.chunk ? item.chunk.chunkName : ''"
-          @click="changeSymbol(item)"
-          v-if="item"
-        >
-          {{ item.symbol }}
-        </div>
-        <div class="tile" v-else></div>
-      </template>
-    </div>
+  <div class="container no-select">
+    <world-component
+      id="world"
+      :style="worldStyle"
+      :game="game"
+      v-if="game.isOn"
+    ></world-component>
     <div class="dashboard">
-      <div v-if="game.player && game.player.chunk">
-        {{ game.player.chunk.chunkName }}
-      </div>
       <div v-if="game.player">
-        {{ game.player.globalX }}, {{ game.player.globalY }}
+        <div>
+          Position:
+          {{ game.player.globalX }}, {{ game.player.globalY }} ({{
+            game.player.chunk.chunkName
+          }})
+        </div>
       </div>
+      <button @click="setEnable(true)" :disabled="isEnable">Edit</button>
+      <button @click="setEnable(false)" :disabled="!isEnable">Done</button>
+      <symbols-component v-if="isEnable"></symbols-component>
     </div>
   </div>
 </template>
 
 <script>
-import Controller from './lib/Controller'
-import Game from './lib/Game'
+import { mapGetters, mapActions } from "vuex";
+import Controller from "./lib/Controller";
+import Game from "./lib/Game";
+import SymbolsComponent from "./ui/SymbolsComponent.vue";
+import WorldComponent from "./ui/WorldComponent.vue";
 
 export default {
+  components: {
+    SymbolsComponent,
+    WorldComponent
+  },
   data() {
-    const viewSize = 50
+    const viewSize = 50;
     const game = new Game({
       viewSize,
       cameraDelta: { x: 16, y: 16 }
-    })
+    });
     return {
       game: game,
-      viewSize,
-      isEdit: true
-    }
+      viewSize
+    };
   },
   computed: {
+    ...mapGetters("editor", ["isEnable"]),
     worldStyle() {
       return {
-        display: 'inline-grid',
-        'grid-template-rows': 'repeat(' + this.viewSize + ', 1em)',
-        'grid-template-columns': 'repeat(' + this.viewSize + ', 1em)'
-      }
+        display: "inline-grid",
+        "grid-template-rows": "repeat(" + this.viewSize + ", 1em)",
+        "grid-template-columns": "repeat(" + this.viewSize + ", 1em)"
+      };
     }
   },
   methods: {
-    changeSymbol(item) {
-      if (!this.isEdit) {
-        return
-      }
-      item.symbol = 'clicked'
-    }
+    ...mapActions("editor", ["setEnable"])
   },
   mounted() {
     this.game.start().then(player => {
-      player.color = '#226cff'
-      new Controller(player, { up: 'w', down: 's', left: 'a', right: 'd' })
-    })
+      player.color = "#226cff";
+      new Controller(player, { up: "w", down: "s", left: "a", right: "d" });
+    });
   }
-}
+};
 </script>
 
 <style scoped>
@@ -81,16 +77,17 @@ export default {
   height: 50em;
   overflow: hidden;
 }
-
-.tile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1em;
-}
 .dashboard {
   display: inline-block;
-  padding: .5em;
+  padding: 0.5em;
   border: 5px ridge gray;
+}
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }
 </style>

@@ -10,6 +10,7 @@ class Game {
       viewSize,
       cameraDelta
     })
+    this.isOn = false
   }
 
   start () {
@@ -21,6 +22,7 @@ class Game {
       })
       .then(player => {
         this.startRender()
+        this.isOn = true
         return player
       })
   }
@@ -48,7 +50,7 @@ class Game {
           }
           console.log(status)
         })
-    }, 100)
+    }, 16)
   }
 }
 

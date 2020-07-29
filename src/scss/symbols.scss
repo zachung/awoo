@@ -1,0 +1,28 @@
+$Blocks: (
+  0: "\250E",
+  1: "\2516",
+  2: "\2512",
+  3: "\251A",
+  4: "\2501",
+  5: "\2503",
+  6: "\2751"
+);
+$Items: (
+  0: "\25CE"
+);
+
+@each $id, $symbol in $Blocks {
+  .symbol-Blocks-#{$id}:hover::before {
+    content: "#{$symbol}";
+    display: inline-block;
+    position: absolute;
+  }
+}
+
+@each $id, $symbol in $Items {
+  .symbol-Items-#{$id}:hover::before {
+    content: "#{$symbol}";
+    display: inline-block;
+    position: absolute;
+  }
+}
