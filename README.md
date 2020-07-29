@@ -1,17 +1,13 @@
 # awoo
 install dependencies
 ```shell script
-npm i
+npm install
 ```
-build
+and run up on http://localhost:8080
+```shell script
+npm run start
+```
+or build for static
 ```shell script
 npm run build
-```
-install http-server for ajax request world maps (prevent Cross origin requests)
-```shell script
-npm install -g http-server
-```
-and run up
-```shell script
-http-server
 ```
