@@ -6,33 +6,23 @@
       :game="game"
       v-if="game.isOn"
     ></world-component>
-    <div class="dashboard">
-      <div v-if="game.player">
-        <div>
-          Position:
-          {{ game.player.globalX }}, {{ game.player.globalY }} ({{
-            game.player.chunk.chunkName
-          }})
-        </div>
-      </div>
-      <button @click="setEnable(true)" :disabled="isEnable">Edit</button>
-      <button @click="setEnable(false)" :disabled="!isEnable">Done</button>
-      <symbols-component v-if="isEnable"></symbols-component>
-    </div>
+    <dashboard-component
+      class="dashboard"
+      :player="game.player"
+    ></dashboard-component>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
 import Controller from "./lib/Controller";
 import Game from "./lib/Game";
-import SymbolsComponent from "./ui/SymbolsComponent.vue";
 import WorldComponent from "./ui/WorldComponent.vue";
+import DashboardComponent from "./ui/DashboardComponent.vue";
 
 export default {
   components: {
-    SymbolsComponent,
-    WorldComponent
+    WorldComponent,
+    DashboardComponent
   },
   data() {
     const viewSize = 50;
@@ -46,7 +36,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("editor", ["isEnable"]),
     worldStyle() {
       return {
         display: "inline-grid",
@@ -54,9 +43,6 @@ export default {
         "grid-template-columns": "repeat(" + this.viewSize + ", 1em)"
       };
     }
-  },
-  methods: {
-    ...mapActions("editor", ["setEnable"])
   },
   mounted() {
     this.game.start().then(player => {

@@ -11,18 +11,26 @@ $Items: (
   0: "\25CE"
 );
 
+@mixin symbol($symbol) {
+  content: "#{$symbol}";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
+  background-color: white;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 @each $id, $symbol in $Blocks {
   .symbol-Blocks-#{$id}:hover::before {
-    content: "#{$symbol}";
-    display: inline-block;
-    position: absolute;
+    @include symbol($symbol);
   }
 }
 
 @each $id, $symbol in $Items {
   .symbol-Items-#{$id}:hover::before {
-    content: "#{$symbol}";
-    display: inline-block;
-    position: absolute;
+    @include symbol($symbol);
   }
 }

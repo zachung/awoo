@@ -95,6 +95,7 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 1em;
+  position: relative;
 
   &.editing {
     border-bottom: 1px solid #f0f0f0;
@@ -102,10 +103,6 @@ export default {
   }
   &.replace {
     cursor: none;
-
-    &:hover {
-      border: 1px solid red;
-    }
   }
 }
 </style>
