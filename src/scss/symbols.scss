@@ -1,3 +1,6 @@
+$Grounds: (
+  0: "\2751"
+);
 $Blocks: (
   0: "\250E",
   1: "\2516",
@@ -5,7 +8,7 @@ $Blocks: (
   3: "\251A",
   4: "\2501",
   5: "\2503",
-  6: "\2751"
+  6: "\01F332"
 );
 $Items: (
   0: "\25CE"
@@ -23,14 +26,26 @@ $Items: (
   height: 100%;
 }
 
+@each $id, $symbol in $Grounds {
+  .editing {
+    &.symbol-Grounds-#{$id}:hover::before {
+      @include symbol($symbol);
+    }
+  }
+}
+
 @each $id, $symbol in $Blocks {
-  .symbol-Blocks-#{$id}:hover::before {
-    @include symbol($symbol);
+  .editing {
+    &.symbol-Blocks-#{$id}:hover::before {
+      @include symbol($symbol);
+    }
   }
 }
 
 @each $id, $symbol in $Items {
-  .symbol-Items-#{$id}:hover::before {
-    @include symbol($symbol);
+  .editing {
+    &.symbol-Items-#{$id}:hover::before {
+      @include symbol($symbol);
+    }
   }
 }

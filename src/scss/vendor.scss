@@ -1,0 +1,8 @@
+@mixin user_select($property) {
+  -webkit-touch-callout: $property; /* iOS Safari */
+  -webkit-user-select: $property; /* Safari */
+  -moz-user-select: $property; /* Old versions of Firefox */
+  -ms-user-select: $property; /* Internet Explorer/Edge */
+  user-select: $property; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}

@@ -28,21 +28,23 @@ class Game {
   }
 
   addPlayer ({ x, y }) {
-    const player = new Item(Symbols.Items[0])
-    player.x = x
-    player.y = y
-    return this.stage.cameraGoTo(x, y)
-      .then(() => {
-        this.stage.chunk.addItem(player)
-        this.player = player
-        return player
-      })
+    const player = new Item({
+      symbol: Symbols.Items[0],
+      x,
+      y
+    })
+    return this.stage.cameraGoTo(x, y).then(() => {
+      this.stage.chunk.addItem(player)
+      this.player = player
+      return player
+    })
   }
 
   startRender () {
     // timer for render
     setInterval(() => {
-      this.stage.cameraGoTo(this.player.globalX, this.player.globalY)
+      this.stage
+        .cameraGoTo(this.player.globalX, this.player.globalY)
         .catch(status => {
           if (status === 404) {
             console.log('Map limited')

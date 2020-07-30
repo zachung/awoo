@@ -1,0 +1,25 @@
+.dashboard {
+  display: inline-block;
+  padding: 0.5em;
+  border: 5px ridge gray;
+
+  .symbol-panel {
+    display: inline-grid;
+    grid-template-columns: repeat(10, 1fr);
+
+    .tile {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1em;
+      border: 1px solid gray;
+      width: 2em;
+      height: 2em;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+    .enabled {
+      background-color: crimson;
+    }
+  }
+}

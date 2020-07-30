@@ -53,27 +53,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-}
-#world {
-  width: 50em;
-  height: 50em;
-  overflow: hidden;
-}
-.dashboard {
-  display: inline-block;
-  padding: 0.5em;
-  border: 5px ridge gray;
-}
-.no-select {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-}
-</style>
+<style scoped></style>

@@ -12,9 +12,8 @@
         @click="changeSymbol(item)"
         v-if="item"
         @contextmenu.prevent="removeSymbol(item)"
-      >
-        {{ item.symbol }}
-      </div>
+        v-html="item.symbol"
+      ></div>
       <div class="tile" v-else></div>
     </template>
   </div>
@@ -44,6 +43,9 @@ export default {
       return newVar;
     },
     selectedSymbol() {
+      if (this.selectedType === undefined) {
+        return;
+      }
       return this.Symbols[this.selectedType][this.selectedId];
     }
   },
@@ -63,46 +65,25 @@ export default {
       if (!this.isEnable) {
         return;
       }
-      this.removeSymbol(item);
       if (this.selectedSymbol === undefined) {
         return;
       }
-      const newItem = new Item(this.selectedSymbol);
-      item.chunk.addItem(newItem, item.x, item.y);
-      newItem.x = item.x;
-      newItem.y = item.y;
+      item.removeSelf();
+      new Item({
+        symbol: this.selectedSymbol,
+        x: item.x,
+        y: item.y
+      }).setIn(item.chunk);
     },
     removeSymbol(item) {
       if (!this.isEnable) {
         return;
       }
-      item.chunk.removeItem(item, item.x, item.y);
+      item.removeSelf();
     }
   },
   mounted() {}
 };
 </script>
 
-<style lang="scss" scoped>
-#world {
-  &.editing {
-    border-top: 1px solid #f0f0f0;
-    border-left: 1px solid #f0f0f0;
-  }
-}
-.tile {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1em;
-  position: relative;
-
-  &.editing {
-    border-bottom: 1px solid #f0f0f0;
-    border-right: 1px solid #f0f0f0;
-  }
-  &.replace {
-    cursor: none;
-  }
-}
-</style>
+<style scoped></style>
