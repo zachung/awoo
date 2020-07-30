@@ -4,6 +4,7 @@
   width: 50em;
   height: 50em;
   overflow: hidden;
+  box-sizing: border-box;
 
   &.editing {
     border-top: 1px solid #f0f0f0;
@@ -24,6 +25,11 @@
       &.replace {
         cursor: none;
       }
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
 }

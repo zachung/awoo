@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="(symbols, type) in Symbols">
-      <h6>{{ type }}</h6>
+      <h6>{{ TypeKeys[type] }}</h6>
       <div class="symbol-panel">
         <div
           v-for="(symbol, id) in symbols"
@@ -10,8 +10,12 @@
           :class="{
             enabled: id === selectedId && type === selectedType
           }"
-          v-html="symbol"
-        ></div>
+        >
+          <template v-if="symbol.length > 10">
+            <img :src="symbol" alt="" />
+          </template>
+          <div v-else v-html="symbol"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -19,14 +23,15 @@
 
 <script>
 import { createNamespacedHelpers } from "vuex";
-import { Symbols } from "awoo-core";
+import Symbols from "../lib/Symbols";
 
 const { mapGetters, mapActions } = createNamespacedHelpers("editor");
 
 export default {
   data() {
     return {
-      Symbols
+      Symbols,
+      TypeKeys: ["Grounds", "Blocks", "Items"]
     };
   },
   computed: {

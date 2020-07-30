@@ -1,15 +1,19 @@
 <template>
-  <div class="container no-select">
-    <world-component
-      id="world"
-      :style="worldStyle"
-      :game="game"
-      v-if="game.isOn"
-    ></world-component>
-    <dashboard-component
-      class="dashboard"
-      :player="game.player"
-    ></dashboard-component>
+  <div>
+    <div class="container no-select">
+      <world-component
+        id="world"
+        :style="worldStyle"
+        :game="game"
+        v-if="game.isOn"
+      ></world-component>
+      <dashboard-component
+        class="dashboard"
+        :game="game"
+        :player="game.player"
+      ></dashboard-component>
+    </div>
+    <footer-component></footer-component>
   </div>
 </template>
 
@@ -18,14 +22,16 @@ import Controller from "./lib/Controller";
 import Game from "./lib/Game";
 import WorldComponent from "./ui/WorldComponent.vue";
 import DashboardComponent from "./ui/DashboardComponent.vue";
+import FooterComponent from "./ui/FooterComponent.vue";
 
 export default {
   components: {
     WorldComponent,
-    DashboardComponent
+    DashboardComponent,
+    FooterComponent
   },
   data() {
-    const viewSize = 50;
+    const viewSize = 30;
     const game = new Game({
       viewSize,
       cameraDelta: { x: 16, y: 16 }

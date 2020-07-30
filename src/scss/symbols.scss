@@ -8,14 +8,18 @@ $Blocks: (
   3: "\251A",
   4: "\2501",
   5: "\2503",
-  6: "\01F332"
+  6: "\01F332",
+  7: "/images/deforestation.png"
 );
 $Items: (
   0: "\25CE"
 );
 
+@function is_url($symbol) {
+  @return str-length($symbol) > 2;
+}
+
 @mixin symbol($symbol) {
-  content: "#{$symbol}";
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,26 +30,50 @@ $Items: (
   height: 100%;
 }
 
+@mixin symbol_content($symbol) {
+  @include symbol($symbol);
+  content: "#{$symbol}";
+}
+
+@mixin symbol_url($symbol) {
+  @include symbol($symbol);
+  content: "";
+  background-image: url("#{$symbol}");
+  background-size: 100% 100%;
+}
+
 @each $id, $symbol in $Grounds {
   .editing {
-    &.symbol-Grounds-#{$id}:hover::before {
-      @include symbol($symbol);
+    &.symbol-0-#{$id}:hover::before {
+      @if (is_url($symbol)) {
+        @include symbol_url($symbol);
+      } @else {
+        @include symbol_content($symbol);
+      }
     }
   }
 }
 
 @each $id, $symbol in $Blocks {
   .editing {
-    &.symbol-Blocks-#{$id}:hover::before {
-      @include symbol($symbol);
+    &.symbol-1-#{$id}:hover::before {
+      @if (is_url($symbol)) {
+        @include symbol_url($symbol);
+      } @else {
+        @include symbol_content($symbol);
+      }
     }
   }
 }
 
 @each $id, $symbol in $Items {
   .editing {
-    &.symbol-Items-#{$id}:hover::before {
-      @include symbol($symbol);
+    &.symbol-2-#{$id}:hover::before {
+      @if (is_url($symbol)) {
+        @include symbol_url($symbol);
+      } @else {
+        @include symbol_content($symbol);
+      }
     }
   }
 }

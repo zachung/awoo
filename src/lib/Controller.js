@@ -36,6 +36,9 @@ class Controller {
   move (dx, dy) {
     const item = this.item
     item.move(item.globalX + dx, item.globalY + dy)
+      .catch(err => {
+        console.log(err.message)
+      })
   }
 }
 

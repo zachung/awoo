@@ -10,18 +10,21 @@
         :data-y="item.globalY"
         :data-chunk="item.chunk ? item.chunk.chunkName : ''"
         @click="changeSymbol(item)"
-        v-if="item"
         @contextmenu.prevent="removeSymbol(item)"
-        v-html="item.symbol"
-      ></div>
-      <div class="tile" v-else></div>
+      >
+        <template v-if="isUrl(item)">
+          <img :src="symbol(item)" alt="" />
+        </template>
+        <div v-else v-html="symbol(item)"></div>
+      </div>
     </template>
   </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from "vuex";
-import { Item, Symbols } from "awoo-core";
+import { Item } from "awoo-core";
+import Symbols from "../lib/Symbols";
 
 const { mapGetters, mapActions } = createNamespacedHelpers("editor");
 
@@ -39,14 +42,8 @@ export default {
       };
       // show current selected symbol
       const symbol = "symbol-" + this.selectedType + "-" + this.selectedId;
-      newVar[symbol] = true;
+      newVar[symbol] = this.isEnable;
       return newVar;
-    },
-    selectedSymbol() {
-      if (this.selectedType === undefined) {
-        return;
-      }
-      return this.Symbols[this.selectedType][this.selectedId];
     }
   },
   data() {
@@ -55,6 +52,12 @@ export default {
     };
   },
   methods: {
+    symbol(item) {
+      if (item.type === undefined) {
+        return "";
+      }
+      return this.Symbols[item.type][item.id];
+    },
     tileStyle(item) {
       return {
         color: item.color,
@@ -65,21 +68,27 @@ export default {
       if (!this.isEnable) {
         return;
       }
-      if (this.selectedSymbol === undefined) {
+      if (this.selectedType === undefined) {
         return;
       }
       item.removeSelf();
-      new Item({
-        symbol: this.selectedSymbol,
+      const newItem = new Item({
+        type: this.selectedType,
+        id: this.selectedId,
         x: item.x,
         y: item.y
-      }).setIn(item.chunk);
+      });
+      newItem.setIn(item.chunk);
     },
     removeSymbol(item) {
       if (!this.isEnable) {
         return;
       }
       item.removeSelf();
+    },
+    isUrl(item) {
+      const symbol = this.symbol(item);
+      return symbol !== undefined && symbol.length > 10;
     }
   },
   mounted() {}

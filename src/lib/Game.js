@@ -1,4 +1,4 @@
-import { Stage, Item, Symbols } from 'awoo-core'
+import { Stage, Item } from 'awoo-core'
 
 /**
  * @property {Stage} stage
@@ -29,7 +29,8 @@ class Game {
 
   addPlayer ({ x, y }) {
     const player = new Item({
-      symbol: Symbols.Items[0],
+      type: 2,
+      id: 0,
       x,
       y
     })
@@ -53,6 +54,13 @@ class Game {
           console.log(status)
         })
     }, 16)
+  }
+
+  save (cb) {
+    return this.stage.save(chunks => {
+      chunks.forEach(cb)
+      return chunks
+    })
   }
 }
 
