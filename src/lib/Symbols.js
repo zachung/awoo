@@ -14,7 +14,7 @@ const Blocks = [
   '\u2501', // ━ 4
   '\u2503', // ┃ 5
   '&#127794;', // 🌲 6
-  '/images/wood.png', // 7
+  './images/wood.png', // 7
 ]
 const Items = [
   '\u25CE', // ◎ 0
