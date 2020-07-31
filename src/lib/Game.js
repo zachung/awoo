@@ -1,4 +1,5 @@
 import { Stage, Item } from 'awoo-core'
+import JsonChunkReader from './JsonChunkReader'
 
 /**
  * @property {Stage} stage
@@ -8,7 +9,8 @@ class Game {
     const { viewSize, cameraDelta } = props
     this.stage = new Stage({
       viewSize,
-      cameraDelta
+      cameraDelta,
+      chunkReader: new JsonChunkReader()
     })
     this.isOn = false
   }
