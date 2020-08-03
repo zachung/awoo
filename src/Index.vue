@@ -34,7 +34,9 @@ export default {
     const viewSize = 30;
     const game = new Game({
       viewSize,
-      cameraDelta: { x: 16, y: 16 }
+      cameraDelta: { x: 16, y: 16 },
+      serverUri: "http://localhost:3000",
+      name: 'zach'
     });
     return {
       game: game,
@@ -53,7 +55,13 @@ export default {
   mounted() {
     this.game.start().then(player => {
       player.color = "#226cff";
-      new Controller(player, { up: "w", down: "s", left: "a", right: "d" });
+      new Controller(player, {
+        up: "w",
+        down: "s",
+        left: "a",
+        right: "d",
+        events: this.game.events
+      });
     });
   }
 };

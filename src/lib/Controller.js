@@ -10,7 +10,13 @@ class Controller {
   }
 
   init (options) {
-    const { up = 'up', down = 'down', right = 'right', left = 'left' } = options
+    const {
+      up = 'up',
+      down = 'down',
+      right = 'right',
+      left = 'left'
+    } = options
+    this.options = options
     hotkeys(left, () => this.left())
     hotkeys(up, () => this.up())
     hotkeys(right, () => this.right())
@@ -35,10 +41,9 @@ class Controller {
 
   move (dx, dy) {
     const item = this.item
-    item.move(item.globalX + dx, item.globalY + dy)
-      .catch(err => {
-        console.log(err.message)
-      })
+    const x = item.globalX + dx
+    const y = item.globalY + dy
+    this.options.events.move(item.name, x, y)
   }
 }
 

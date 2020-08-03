@@ -1,45 +1,54 @@
-import { Stage, Item } from 'awoo-core'
+import Stage from './Stage'
 import JsonChunkReader from './JsonChunkReader'
+import io from 'socket.io-client'
+import Events from './Events'
 
 /**
  * @property {Stage} stage
  */
 class Game {
   constructor (props) {
-    const { viewSize, cameraDelta } = props
-    this.stage = new Stage({
-      viewSize,
-      cameraDelta,
-      chunkReader: new JsonChunkReader()
-    })
+    this.props = props
     this.isOn = false
   }
 
   start () {
-    const initX = 16
-    const initY = 16
-    return Promise.resolve()
-      .then(() => {
-        return this.addPlayer({ x: initX, y: initY })
-      })
-      .then(player => {
-        this.startRender()
-        this.isOn = true
-        return player
+    return this.connect(this.props.serverUri)
+      .then(({ x, y }) => {
+        const { viewSize, cameraDelta } = this.props
+        this.stage = new Stage({
+          viewSize,
+          cameraDelta,
+          chunkReader: new JsonChunkReader(this.events)
+        })
+        return this.stage.cameraGoTo(x, y)
+          .then(() => this.stage.getChunkItem(x, y))
+          .then(player => {
+            player.name = this.props.name
+            this.player = player
+            this.startRender()
+            this.isOn = true
+            return player
+          })
       })
   }
 
-  addPlayer ({ x, y }) {
-    const player = new Item({
-      type: 2,
-      id: 0,
-      x,
-      y
-    })
-    return this.stage.cameraGoTo(x, y).then(() => {
-      this.stage.chunk.addItem(player)
-      this.player = player
-      return player
+  connect (uri) {
+    return new Promise((resolve, reject) => {
+      const socket = io(uri)
+      this.events = new Events(socket)
+      socket.on('connect', () => {
+        console.log('connected')
+        this.events.newPlayer(this.props.name)
+        socket.on('in-game', resolve)
+        socket.on('sync-world', exports => {
+          // update chunks
+          for (const chunkName in exports) {
+            console.log(exports[chunkName])
+            this.stage.reloadChunk(chunkName, exports[chunkName])
+          }
+        })
+      })
     })
   }
 

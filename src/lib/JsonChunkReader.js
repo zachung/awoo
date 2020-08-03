@@ -1,26 +1,19 @@
-import { ChunkReader } from 'awoo-core';
+import { ChunkReader } from 'awoo-core'
 
 class JsonChunkReader extends ChunkReader {
-  fetchData(chunk) {
-    return this.getJSON("world/" + chunk + ".json");
+  /**
+   * @param {Events} events
+   */
+  constructor (events) {
+    super()
+    this.events = events
   }
 
-  getJSON(url) {
+  fetchData (chunk) {
     return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", url, true);
-      xhr.responseType = "json";
-      xhr.onload = () => {
-        const status = xhr.status;
-        if (status === 200) {
-          resolve(xhr.response);
-        } else {
-          reject(status, xhr.response);
-        }
-      };
-      xhr.send();
-    });
+      this.events.syncWorld(chunk, resolve)
+    })
   }
 }
 
-export default JsonChunkReader;
+export default JsonChunkReader
