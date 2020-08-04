@@ -38,8 +38,7 @@ export default {
     const viewSize = 30;
     const game = new Game({
       viewSize,
-      cameraDelta: { x: -16, y: -16 },
-      serverUri: "http://localhost:3000"
+      cameraDelta: { x: -16, y: -16 }
     });
     return {
       game,
@@ -56,9 +55,9 @@ export default {
     }
   },
   methods: {
-    start(name) {
+    start(uri, name) {
       this.game
-        .start(name, () => {
+        .start(uri, name, () => {
           this.$refs.worldComponent.render();
         })
         .then(player => {

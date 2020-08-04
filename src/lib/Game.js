@@ -26,9 +26,9 @@ class Game {
     return this.stage.player
   }
 
-  start (name, cb) {
+  start (uri, name, cb) {
     this.props.name = name
-    return this.connect(this.props.serverUri)
+    return this.connect(uri)
       .then(({ x, y }) => {
         return this.stage.focusPlayer(x, y, name)
           .then(player => {
