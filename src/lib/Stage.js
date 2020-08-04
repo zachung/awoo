@@ -1,4 +1,4 @@
-import { Chunk } from 'awoo-core'
+import { Chunk, Item } from 'awoo-core'
 
 const ChunkSize = 32
 const round = p => ((p % ChunkSize) + ChunkSize) % ChunkSize
@@ -20,11 +20,11 @@ const chunksHandler = reader => {
 
 /**
  * @property {Number} viewSize
- * @property {Object} cameraDelta 鏡頭偏移(距離左上角距離)
+ * @property {Camera} camera
  * @preserve {ChunkReader} chunkReader
  */
 class Stage {
-  constructor ({ viewSize, cameraDelta, chunkReader }) {
+  constructor ({ viewSize, camera, chunkReader }) {
     this.chunks = new Proxy({}, chunksHandler(chunkReader))
     this.chunkReader = chunkReader
 
@@ -37,12 +37,12 @@ class Stage {
       }
     }
     this.viewSize = viewSize
-    this.cameraDelta = cameraDelta
+    this.camera = camera
   }
 
-  cameraGoTo (x, y) {
-    x -= this.cameraDelta.x
-    y -= this.cameraDelta.y
+  cameraFollow () {
+    const x = this.camera.x
+    const y = this.camera.y
     return this.loadNearChunks(x, y).then(() => {
       for (let mapX = 0; mapX < this.viewSize; mapX++) {
         for (let mapY = 0; mapY < this.viewSize; mapY++) {
@@ -81,8 +81,24 @@ class Stage {
   }
 
   getChunkByLoc (x, y) {
-    const chunkInx = Chunk.getChunkName(chunkOffset(x), chunkOffset(y))
-    return this.chunks[chunkInx]
+    return this.loadChunk(chunkOffset(x), chunkOffset(y))
+  }
+
+  /**
+   * @param {ItemData} itemData
+   */
+  replace (itemData) {
+    const { chunkName } = itemData
+    this.chunks[chunkName].then(chunk => {
+      const newItem = Item.fromData(itemData)
+      chunk.removeItem(newItem.x, newItem.y)
+      chunk.addItem(newItem)
+      newItem.chunk = chunk
+      // TODO: check is current player
+      if (newItem.type === 2) {
+        this.camera.gotoItem(newItem)
+      }
+    })
   }
 
   move (chunk, item, x, y) {

@@ -6,6 +6,7 @@
         :style="worldStyle"
         :game="game"
         v-if="game.isOn"
+        ref="worldComponent"
       ></world-component>
       <dashboard-component
         class="dashboard"
@@ -34,7 +35,7 @@ export default {
     const viewSize = 30;
     const game = new Game({
       viewSize,
-      cameraDelta: { x: 16, y: 16 },
+      cameraDelta: { x: -16, y: -16 },
       serverUri: "http://localhost:3000",
       name: 'zach'
     });
@@ -53,7 +54,9 @@ export default {
     }
   },
   mounted() {
-    this.game.start().then(player => {
+    this.game.start(() => {
+      this.$refs.worldComponent.render()
+    }).then(player => {
       player.color = "#226cff";
       new Controller(player, {
         up: "w",

@@ -13,12 +13,18 @@
       {{ isEnable ? "Done" : "Edit Map" }}
     </button>
     <symbols-component v-if="isEnable"></symbols-component>
+    <ul>
+      <li v-for="log in logs" :class="log.level">
+        {{ log.time }} [{{ log.level }}]{{ log.message }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import SymbolsComponent from "./SymbolsComponent.vue";
+import Messages from '../lib/Messages'
 
 export default {
   components: {
@@ -30,6 +36,11 @@ export default {
   },
   computed: {
     ...mapGetters("editor", ["isEnable"])
+  },
+  data() {
+    return {
+      logs: []
+    }
   },
   methods: {
     ...mapActions("editor", ["setEnable"]),
@@ -47,9 +58,25 @@ export default {
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
       });
+    },
+    pushLog(log) {
+      const length = this.logs.push(log)
+      if (length > 10) {
+        this.logs.shift()
+      }
     }
+  },
+  mounted () {
+    Messages.onLogging(log => this.pushLog(log))
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.info {
+  color: green;
+}
+.error {
+  color: red;
+}
+</style>

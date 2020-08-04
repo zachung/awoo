@@ -89,6 +89,9 @@ export default {
     isUrl(item) {
       const symbol = this.symbol(item);
       return symbol !== undefined && symbol.length > 10;
+    },
+    render() {
+      this.$forceUpdate()
     }
   },
   mounted() {}

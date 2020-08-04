@@ -43,6 +43,8 @@ class Controller {
     const item = this.item
     const x = item.globalX + dx
     const y = item.globalY + dy
+    item.x = x
+    item.y = y
     this.options.events.move(item.name, x, y)
   }
 }

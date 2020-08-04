@@ -4,11 +4,11 @@ class Events {
   }
 
   newPlayer (name) {
-    this.socket.emit('new-player', name)
+    this.socket.emit('new_player', name)
   }
 
   syncWorld (chunk, cb) {
-    this.socket.emit('sync-world', chunk, c => {
+    this.socket.emit('sync_world', chunk, c => {
       cb(Object.values(c)[0])
     })
   }
