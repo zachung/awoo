@@ -8,6 +8,7 @@
         v-if="game.isOn"
         ref="worldComponent"
       ></world-component>
+      <connect-component v-else @connect="start"></connect-component>
       <dashboard-component
         class="dashboard"
         :game="game"
@@ -24,9 +25,11 @@ import Game from "./lib/Game";
 import WorldComponent from "./ui/WorldComponent.vue";
 import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
+import ConnectComponent from "./ui/ConnectComponent.vue";
 
 export default {
   components: {
+    ConnectComponent,
     WorldComponent,
     DashboardComponent,
     FooterComponent
@@ -36,11 +39,10 @@ export default {
     const game = new Game({
       viewSize,
       cameraDelta: { x: -16, y: -16 },
-      serverUri: "http://localhost:3000",
-      name: 'zach'
+      serverUri: "http://localhost:3000"
     });
     return {
-      game: game,
+      game,
       viewSize
     };
   },
@@ -53,20 +55,25 @@ export default {
       };
     }
   },
-  mounted() {
-    this.game.start(() => {
-      this.$refs.worldComponent.render()
-    }).then(player => {
-      player.color = "#226cff";
-      new Controller(player, {
-        up: "w",
-        down: "s",
-        left: "a",
-        right: "d",
-        events: this.game.events
-      });
-    });
-  }
+  methods: {
+    start(name) {
+      this.game
+        .start(name, () => {
+          this.$refs.worldComponent.render();
+        })
+        .then(player => {
+          player.color = "#226cff";
+          new Controller(player, {
+            up: "w",
+            down: "s",
+            left: "a",
+            right: "d",
+            events: this.game.events
+          });
+        });
+    }
+  },
+  mounted() {}
 };
 </script>
 

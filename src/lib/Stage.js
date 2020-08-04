@@ -22,12 +22,10 @@ const chunksHandler = reader => {
  * @property {Number} viewSize
  * @property {Camera} camera
  * @preserve {ChunkReader} chunkReader
+ * @preserve {Item} player
  */
 class Stage {
-  constructor ({ viewSize, camera, chunkReader }) {
-    this.chunks = new Proxy({}, chunksHandler(chunkReader))
-    this.chunkReader = chunkReader
-
+  constructor ({ viewSize, camera }) {
     this.map = []
     // init fallback
     for (let x = 0; x < viewSize; x++) {
@@ -38,6 +36,11 @@ class Stage {
     }
     this.viewSize = viewSize
     this.camera = camera
+  }
+
+  setChunkReader (chunkReader) {
+    this.chunks = new Proxy({}, chunksHandler(chunkReader))
+    this.chunkReader = chunkReader
   }
 
   cameraFollow () {
@@ -90,12 +93,20 @@ class Stage {
   replace (itemData) {
     const { chunkName } = itemData
     this.chunks[chunkName].then(chunk => {
-      const newItem = Item.fromData(itemData)
-      chunk.removeItem(newItem.x, newItem.y)
-      chunk.addItem(newItem)
-      newItem.chunk = chunk
+      chunk.removeItem(itemData.x, itemData.y)
       // TODO: check is current player
-      if (newItem.type === 2) {
+      const isPlayer =
+        itemData.type === 2 && itemData.props.name === this.player.props.name
+      let newItem
+
+      if (isPlayer) {
+        newItem = this.player
+      } else {
+        newItem = Item.fromData(itemData)
+      }
+      newItem.setLocalPosition(itemData.x, itemData.y)
+      chunk.addItem(newItem)
+      if (isPlayer) {
         this.camera.gotoItem(newItem)
       }
     })
@@ -105,24 +116,38 @@ class Stage {
     const preX = item.x
     const preY = item.y
 
-    return Promise.resolve()
-      .then(() => {
-        this.getChunkByLoc(x, y).addItem(item, round(x), round(y))
-        chunk.removeItem(preX, preY)
-      })
+    return Promise.resolve().then(() => {
+      this.getChunkByLoc(x, y).addItem(item, round(x), round(y))
+      chunk.removeItem(preX, preY)
+    })
   }
 
   save (cb) {
-    return Promise.resolve(Object.values(this.chunks)
-      .filter(chunk => chunk.isDirty))
+    return Promise.resolve(
+      Object.values(this.chunks).filter(chunk => chunk.isDirty)
+    )
       .then(cb)
       .then(chunks => {
-        chunks.forEach(chunk => chunk.isDirty = false)
+        chunks.forEach(chunk => (chunk.isDirty = false))
       })
   }
 
   reloadChunk (chunkName, chunkData) {
-    this.chunks[chunkName].then(chunk => chunk.reloadWorld(this.chunkReader, chunkData))
+    this.chunks[chunkName].then(chunk =>
+      chunk.reloadWorld(this.chunkReader, chunkData)
+    )
+  }
+
+  focusPlayer (x, y, name) {
+    this.camera.goto(x, y)
+    return this.cameraFollow()
+      .then(() => this.getChunkItem(x, y))
+      .then(player => {
+        this.camera.goto(x, y)
+        player.name = name
+        this.player = player
+        return player
+      })
   }
 }
 

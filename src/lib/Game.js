@@ -12,17 +12,27 @@ class Game {
   constructor (props) {
     this.props = props
     this.isOn = false
+    const { viewSize, cameraDelta } = this.props
+
+    const camera = new Camera()
+    camera.setDelta(cameraDelta.x, cameraDelta.y)
+    this.stage = new Stage({
+      viewSize,
+      camera
+    })
   }
 
-  start (cb) {
+  get player () {
+    return this.stage.player
+  }
+
+  start (name, cb) {
+    this.props.name = name
     return this.connect(this.props.serverUri)
       .then(({ x, y }) => {
-        this.camera.goto(x, y)
-        return this.stage.cameraFollow()
-          .then(() => this.stage.getChunkItem(x, y))
+        return this.stage.focusPlayer(x, y, name)
           .then(player => {
-            player.name = this.props.name
-            this.player = player
+            player.props.name = name
             this.startRender(cb)
             this.isOn = true
             return player
@@ -34,15 +44,7 @@ class Game {
     return new Promise((resolve, reject) => {
       const socket = io(uri)
       const events = new Events(socket)
-      const { viewSize, cameraDelta } = this.props
-      const camera = new Camera()
-      camera.setDelta(cameraDelta.x, cameraDelta.y)
-      this.stage = new Stage({
-        viewSize,
-        camera,
-        chunkReader: new JsonChunkReader(events)
-      })
-      this.camera = camera
+      this.stage.setChunkReader(new JsonChunkReader(events))
       const listens = new Listens(socket, {
         inGame: resolve,
         events,

@@ -13,8 +13,8 @@ class Events {
     })
   }
 
-  move (name, x, y) {
-    this.socket.emit('move', { name, x, y })
+  move ({ name, x, y }, cb) {
+    this.socket.emit('move', { name, x, y }, cb)
   }
 }
 

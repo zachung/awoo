@@ -6,6 +6,8 @@ import hotkeys from 'hotkeys-js'
 class Controller {
   constructor (item, options = {}) {
     this.item = item
+    this.x = item.globalX
+    this.y = item.globalY
     this.init(options)
   }
 
@@ -41,11 +43,17 @@ class Controller {
 
   move (dx, dy) {
     const item = this.item
-    const x = item.globalX + dx
-    const y = item.globalY + dy
-    item.x = x
-    item.y = y
-    this.options.events.move(item.name, x, y)
+    this.options.events.move({
+      name: item.name,
+      x: this.x + dx,
+      y: this.y + dy
+    }, err => {
+      if (err) {
+        return
+      }
+      this.x += dx
+      this.y += dy
+    })
   }
 }
 
