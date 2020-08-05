@@ -2,16 +2,16 @@ import { ChunkReader } from 'awoo-core'
 
 class JsonChunkReader extends ChunkReader {
   /**
-   * @param {Events} events
+   * @param {Messenger} messenger
    */
-  constructor (events) {
+  constructor (messenger) {
     super()
-    this.events = events
+    this.messenger = messenger
   }
 
   fetchData (chunk) {
     return new Promise((resolve, reject) => {
-      this.events.syncWorld(chunk, resolve)
+      this.messenger.syncWorld(chunk, resolve)
     })
   }
 }

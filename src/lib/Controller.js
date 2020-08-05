@@ -2,10 +2,12 @@ import hotkeys from 'hotkeys-js'
 
 /**
  * @property {Item} item
+ * @property {Messenger} messenger
  */
 class Controller {
-  constructor (item, options = {}) {
+  constructor (item, messenger, options = {}) {
     this.item = item
+    this.messenger = messenger
     this.x = item.globalX
     this.y = item.globalY
     this.init(options)
@@ -18,7 +20,6 @@ class Controller {
       right = 'right',
       left = 'left'
     } = options
-    this.options = options
     hotkeys(left, () => this.left())
     hotkeys(up, () => this.up())
     hotkeys(right, () => this.right())
@@ -43,7 +44,7 @@ class Controller {
 
   move (dx, dy) {
     const item = this.item
-    this.options.events.move({
+    this.messenger.move({
       name: item.name,
       x: this.x + dx,
       y: this.y + dy

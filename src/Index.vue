@@ -62,12 +62,11 @@ export default {
         })
         .then(player => {
           player.color = "#226cff";
-          new Controller(player, {
+          new Controller(player, this.game.messenger, {
             up: "w",
             down: "s",
             left: "a",
-            right: "d",
-            events: this.game.events
+            right: "d"
           });
         });
     }

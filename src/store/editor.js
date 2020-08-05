@@ -1,7 +1,7 @@
 const editor = {
   namespaced: true,
   state: {
-    enable: true,
+    enable: false,
     selectedId: undefined,
     selectedType: undefined
   },

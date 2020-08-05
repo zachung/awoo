@@ -1,8 +1,7 @@
 import Stage from './Stage'
 import JsonChunkReader from './JsonChunkReader'
 import io from 'socket.io-client'
-import Events from './Events'
-import Listens from './Listens'
+import Messenger from './Messenger'
 import Camera from './Camera'
 
 /**
@@ -43,15 +42,13 @@ class Game {
   connect (uri) {
     return new Promise((resolve, reject) => {
       const socket = io(uri)
-      const events = new Events(socket)
-      this.stage.setChunkReader(new JsonChunkReader(events))
-      const listens = new Listens(socket, {
+      const messenger = new Messenger(socket, {
         inGame: resolve,
-        events,
         name: this.props.name,
         stage: this.stage
       })
-      this.events = events
+      this.stage.setChunkReader(new JsonChunkReader(messenger))
+      this.messenger = messenger
     })
   }
 
