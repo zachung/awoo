@@ -15,7 +15,12 @@
         <template v-if="isUrl(item)">
           <img :src="symbol(item)" alt="" />
         </template>
-        <div v-else v-html="symbol(item)"></div>
+        <div v-else>
+          <div v-if="item.props.name" class="tile-name">
+            {{ item.props.name }}
+          </div>
+          <div v-html="symbol(item)"></div>
+        </div>
       </div>
     </template>
   </div>
@@ -91,11 +96,19 @@ export default {
       return symbol !== undefined && symbol.length > 10;
     },
     render() {
-      this.$forceUpdate()
+      this.$forceUpdate();
     }
   },
   mounted() {}
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.tile-name {
+  position: absolute;
+  top: -1em;
+  left: -5em;
+  width: 11em;
+  text-align: center;
+}
+</style>

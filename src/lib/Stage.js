@@ -1,4 +1,4 @@
-import { Chunk, Item } from 'awoo-core'
+import { Chunk, Item, ItemData } from 'awoo-core'
 
 const ChunkSize = 32
 const round = p => ((p % ChunkSize) + ChunkSize) % ChunkSize
@@ -77,6 +77,11 @@ class Stage {
     return this.chunks[chunkName]
   }
 
+  /**
+   * @param x
+   * @param y
+   * @return {Promise<Item>}
+   */
   getChunkItem (x, y) {
     return this.getChunkByLoc(x, y).then(chunk => {
       return chunk.getItem(round(x), round(y))
@@ -91,20 +96,20 @@ class Stage {
    * @param {ItemData} itemData
    */
   replace (itemData) {
-    const { chunkName } = itemData
-    this.chunks[chunkName].then(chunk => {
-      chunk.removeItem(itemData.x, itemData.y)
+    const data = new ItemData(itemData)
+    this.chunks[data.chunkName].then(chunk => {
+      chunk.removeItem(data.x, data.y)
+      const item = ItemData.fromJson(data)
       // TODO: check is current player
-      const isPlayer =
-        itemData.type === 2 && itemData.props.name === this.player.props.name
+      const isPlayer = item.props.name === this.player.props.name
       let newItem
 
       if (isPlayer) {
         newItem = this.player
+        newItem.setLocalPosition(item.x, item.y)
       } else {
-        newItem = Item.fromData(itemData)
+        newItem = item
       }
-      newItem.setLocalPosition(itemData.x, itemData.y)
       chunk.addItem(newItem)
       if (isPlayer) {
         this.camera.gotoItem(newItem)
@@ -130,12 +135,6 @@ class Stage {
       .then(chunks => {
         chunks.forEach(chunk => (chunk.isDirty = false))
       })
-  }
-
-  reloadChunk (chunkName, chunkData) {
-    this.chunks[chunkName].then(chunk =>
-      chunk.reloadWorld(this.chunkReader, chunkData)
-    )
   }
 
   focusPlayer (x, y, name) {

@@ -4,7 +4,7 @@
 // or draw:
 // * http://shapecatcher.com/
 const Grounds = [
-  '\u2751', // ❑ 0
+  '', // 0
 ]
 const Blocks = [
   '\u250E', // ┎ 0
