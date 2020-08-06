@@ -112,6 +112,14 @@ class Controller {
       )
     })
   }
+
+  enable(focusElement) {
+    keyboardJS.watch(focusElement)
+  }
+
+  disable() {
+    keyboardJS.stop()
+  }
 }
 
 export default Controller

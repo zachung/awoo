@@ -2,13 +2,28 @@ import { createLogger, format, transports } from 'winston'
 import colors from 'colors'
 
 const { timestamp, printf } = format
+const Types = {
+  // 系統訊息
+  SYSTEM: Symbol('system'),
+  // 聊天訊息
+  CHAT: Symbol('chat'),
+}
 
-const myFormat = printf(({ level, message, timestamp }) => {
-  let types = {
-    'info': colors.green,
-    'error': colors.red
+const myFormat = printf(({ level, message, timestamp, ...meta }) => {
+  const { type = Types.SYSTEM } = meta
+  switch (type) {
+    case Types.SYSTEM:
+      let types = {
+        info: colors.green,
+        error: colors.red
+      }
+      return types[level](`${timestamp} [${level}] ${message}`)
+    case Types.CHAT:
+      const { name } = meta
+      return `${name}: ${message}`
+    default:
+      return message
   }
-  return types[level](`${timestamp} [${level}] ${message}`)
 })
 
 const transportConsole = new transports.Console({
@@ -18,7 +33,7 @@ const transportConsole = new transports.Console({
     format.simple(),
     timestamp({ format: 'HH:mm:ss' }),
     myFormat
-  ),
+  )
 })
 const logger = createLogger({
   transports: [
@@ -27,13 +42,14 @@ const logger = createLogger({
 })
 
 export default {
-  info (msg) {
-    logger.info(msg)
+  info (...args) {
+    logger.info(...args)
   },
-  error (msg) {
-    logger.error(msg)
+  error (...args) {
+    logger.error(...args)
   },
   onLogging (cb) {
     return logger.on('data', cb)
   }
 }
+export { Types }

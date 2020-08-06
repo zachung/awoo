@@ -13,6 +13,7 @@ class Game {
     this.props = props
     this.isOn = false
     this.isConnected = false
+    this.currentOnline = 0
     const { viewSize, cameraDelta } = this.props
 
     const camera = new Camera()
@@ -37,7 +38,7 @@ class Game {
       .then(({ x, y }) => {
         return this.stage.focusPlayer(x, y, name).then(player => {
           player.props.name = name
-          new Controller(player, this.messenger, {
+          this.controller = new Controller(player, this.messenger, {
             up: 'w',
             down: 's',
             left: 'a',

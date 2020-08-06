@@ -3,6 +3,8 @@ import disconnect from './events/Disconnect'
 import connect_error from './events/ConnectError'
 import connect_timeout from './events/ConnectTimeout'
 import connect from './events/Connect'
+import message from './events/Message'
+import current_online from './events/CurrentOnline'
 
 class Messenger {
   constructor (socket, options) {
@@ -15,6 +17,8 @@ class Messenger {
       connect_timeout,
       disconnect,
       sync_blocks,
+      message,
+      current_online,
     }
 
     for (let eventsKey in events) {
@@ -42,6 +46,10 @@ class Messenger {
 
   move ({ name, x, y }, cb) {
     this.socket.emit('move', { name, x, y }, cb)
+  }
+
+  say (message) {
+    this.socket.emit('say', message)
   }
 }
 
