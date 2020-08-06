@@ -24,13 +24,13 @@
   "dependencies": {
     "awoo-core": "github:zachung/awoo-core",
     "colors": "^1.4.0",
+    "keyboardjs": "^2.6.3",
     "socket.io-client": "^2.3.0",
     "vuex": "^3.5.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "css-loader": "^4.2.0",
-    "hotkeys-js": "^3.8.1",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.2",

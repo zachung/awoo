@@ -22,7 +22,8 @@ export default {
     return {
       errors: [],
       uri: "http://localhost:3000",
-      name: ""
+      name: "",
+      isConnecting: false
     };
   },
   methods: {
@@ -36,6 +37,10 @@ export default {
         this.errors.push("Server uri required.");
         return;
       }
+      if (this.isConnecting) {
+        return;
+      }
+      this.isConnecting = true;
       this.$emit("connect", this.uri, this.name);
     }
   }

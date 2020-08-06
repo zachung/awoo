@@ -1,4 +1,29 @@
-import hotkeys from 'hotkeys-js'
+import keyboardJS from 'keyboardjs'
+
+const UP = Symbol('up')
+const DOWN = Symbol('down')
+const RIGHT = Symbol('right')
+const LEFT = Symbol('left')
+const Keys = {
+  [UP]: 0,
+  [DOWN]: 0,
+  [RIGHT]: 0,
+  [LEFT]: 0
+}
+
+const bindKey = (key, symbol, cb) => {
+  keyboardJS.bind(
+    key,
+    e => {
+      e.preventRepeat()
+      Keys[symbol] = 1
+      cb()
+    },
+    e => {
+      Keys[symbol] = 0
+    }
+  )
+}
 
 /**
  * @property {Item} item
@@ -10,6 +35,7 @@ class Controller {
     this.messenger = messenger
     this.x = item.globalX
     this.y = item.globalY
+    this.waitingFeeback = false
     this.init(options)
   }
 
@@ -20,40 +46,70 @@ class Controller {
       right = 'right',
       left = 'left'
     } = options
-    hotkeys(left, () => this.left())
-    hotkeys(up, () => this.up())
-    hotkeys(right, () => this.right())
-    hotkeys(down, () => this.down())
+
+    const cb = isKeyDown => {
+      if (this.moving) {
+        return
+      }
+      this.moving = true
+      this.startMove()
+    }
+    bindKey(up, UP, cb)
+    bindKey(down, DOWN, cb)
+    bindKey(right, RIGHT, cb)
+    bindKey(left, LEFT, cb)
   }
 
-  left () {
-    this.move(-1, 0)
+  startMove () {
+    // try move
+    this._handle()
+      .then(() => {
+        // 12格: 也許是最適合操作的最快速度
+        // 16格: 礙於 socket 往返時間的最高速度
+        // 5格: 設定為初始速度
+        const ceilSec = 10 // 每秒格數(ceil/sec)
+        this.timer = setTimeout(() => {
+          this.startMove()
+        }, 1000 / ceilSec)
+      })
+      .catch(() => {
+        this.moving = false
+      })
   }
 
-  up () {
-    this.move(0, -1)
-  }
-
-  right () {
-    this.move(1, 0)
-  }
-
-  down () {
-    this.move(0, 1)
+  _handle () {
+    const dx = Keys[RIGHT] - Keys[LEFT]
+    const dy = Keys[DOWN] - Keys[UP]
+    if (dx === 0 && dy === 0) {
+      // stop handle move
+      return Promise.reject()
+    }
+    return this.move(dx, dy)
   }
 
   move (dx, dy) {
     const item = this.item
-    this.messenger.move({
-      name: item.name,
-      x: this.x + dx,
-      y: this.y + dy
-    }, err => {
-      if (err) {
-        return
-      }
-      this.x += dx
-      this.y += dy
+    if (this.waitingFeeback) {
+      return Promise.resolve(item)
+    }
+    return new Promise(resolve => {
+      this.waitingFeeback = true
+      this.messenger.move(
+        {
+          name: item.name,
+          x: this.x + dx,
+          y: this.y + dy
+        },
+        err => {
+          if (!err) {
+            this.x += dx
+            this.y += dy
+          }
+          this.waitingFeeback = false
+          // NOTICE: 不會拋錯誤
+          resolve(item)
+        }
+      )
     })
   }
 }
