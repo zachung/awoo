@@ -3,7 +3,6 @@ import disconnect from './events/Disconnect'
 import connect_error from './events/ConnectError'
 import connect_timeout from './events/ConnectTimeout'
 import connect from './events/Connect'
-import in_game from './events/InGame'
 
 class Messenger {
   constructor (socket, options) {
@@ -15,7 +14,6 @@ class Messenger {
       connect_error,
       connect_timeout,
       disconnect,
-      in_game,
       sync_blocks,
     }
 
@@ -25,7 +23,15 @@ class Messenger {
   }
 
   newPlayer (name) {
-    this.socket.emit('new_player', name)
+    return new Promise((resolve, reject) => {
+      this.socket.emit('new_player', name, (err, ...args) => {
+        if (err) {
+          reject(err)
+          return
+        }
+        resolve(...args)
+      })
+    })
   }
 
   syncWorld (chunk, cb) {

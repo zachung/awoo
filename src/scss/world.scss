@@ -1,8 +1,8 @@
 @import "symbols";
 
 #world {
-  width: 50em;
-  height: 50em;
+  align-self: center;
+  justify-self: center;
   overflow: hidden;
   box-sizing: border-box;
 
@@ -17,10 +17,11 @@
     align-items: center;
     font-size: 1em;
     position: relative;
+    background-color: #F8F8F8;
 
     &.editing {
-      border-bottom: 1px solid #f0f0f0;
-      border-right: 1px solid #f0f0f0;
+      border-bottom: 1px solid #F0F0F0;
+      border-right: 1px solid #F0F0F0;
 
       &.replace {
         cursor: none;

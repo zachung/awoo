@@ -8,7 +8,12 @@
         v-if="game.isOn"
         ref="worldComponent"
       ></world-component>
-      <connect-component v-else @connect="start"></connect-component>
+      <connect-component
+        v-else
+        :game="game"
+        @connect="connect"
+        @start="start"
+      ></connect-component>
       <dashboard-component
         class="dashboard"
         :game="game"
@@ -20,7 +25,6 @@
 </template>
 
 <script>
-import Controller from "./lib/Controller";
 import Game from "./lib/Game";
 import WorldComponent from "./ui/WorldComponent.vue";
 import DashboardComponent from "./ui/DashboardComponent.vue";
@@ -36,9 +40,10 @@ export default {
   },
   data() {
     const viewSize = 30;
+    const delta = Math.floor(-viewSize / 2);
     const game = new Game({
       viewSize,
-      cameraDelta: { x: -16, y: -16 }
+      cameraDelta: { x: delta, y: delta }
     });
     return {
       game,
@@ -55,20 +60,18 @@ export default {
     }
   },
   methods: {
-    start(uri, name) {
-      this.game
-        .start(uri, name, () => {
+    connect(uri) {
+      this.game.connect(uri);
+    },
+    start(name, cb) {
+      const promise = this.game
+        .start(name, () => {
           this.$refs.worldComponent.render();
         })
         .then(player => {
           player.color = "#226cff";
-          new Controller(player, this.game.messenger, {
-            up: "w",
-            down: "s",
-            left: "a",
-            right: "d"
-          });
         });
+      cb(promise);
     }
   },
   mounted() {}

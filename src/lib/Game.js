@@ -3,6 +3,7 @@ import JsonChunkReader from './JsonChunkReader'
 import io from 'socket.io-client'
 import Messenger from './Messenger'
 import Camera from './Camera'
+import Controller from './Controller'
 
 /**
  * @property {Stage} stage
@@ -11,6 +12,7 @@ class Game {
   constructor (props) {
     this.props = props
     this.isOn = false
+    this.isConnected = false
     const { viewSize, cameraDelta } = this.props
 
     const camera = new Camera()
@@ -25,31 +27,48 @@ class Game {
     return this.stage.player
   }
 
-  start (uri, name, cb) {
+  start (name, cb) {
     this.props.name = name
-    return this.connect(uri)
+    if (this.starting) {
+      return Promise.reject('starting')
+    }
+    this.starting = true
+    return this.messenger.newPlayer(name)
       .then(({ x, y }) => {
-        return this.stage.focusPlayer(x, y, name)
-          .then(player => {
-            player.props.name = name
-            this.startRender(cb)
-            this.isOn = true
-            return player
+        return this.stage.focusPlayer(x, y, name).then(player => {
+          player.props.name = name
+          new Controller(player, this.messenger, {
+            up: 'w',
+            down: 's',
+            left: 'a',
+            right: 'd'
           })
+          return player
+        })
+      })
+      .then(player => {
+        this.startRender(cb)
+        this.isOn = true
+        return player
+      })
+      .finally(() => {
+        this.starting = false
       })
   }
 
   connect (uri) {
-    return new Promise((resolve, reject) => {
-      const socket = io(uri)
-      const messenger = new Messenger(socket, {
-        inGame: resolve,
-        name: this.props.name,
-        stage: this.stage
-      })
-      this.stage.setChunkReader(new JsonChunkReader(messenger))
-      this.messenger = messenger
+    if (this.connecting) {
+      return Promise.reject('connecting')
+    }
+    this.connecting = true
+    const socket = io(uri)
+    const messenger = new Messenger(socket, {
+      game: this,
+      name: this.props.name,
+      stage: this.stage
     })
+    this.stage.setChunkReader(new JsonChunkReader(messenger))
+    this.messenger = messenger
   }
 
   startRender (cb) {
