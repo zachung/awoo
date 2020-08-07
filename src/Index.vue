@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     connect(uri) {
-      this.game.connect(uri, window.location.protocol === "https:");
+      this.game.connect(uri);
     },
     start(name, cb) {
       const promise = this.game.start(name);

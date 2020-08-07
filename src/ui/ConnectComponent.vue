@@ -31,8 +31,8 @@
 <script>
 import Messages from "../lib/Messages";
 
-const localHost = "http://localhost:3000";
-const defaultHost = "http://awoo-server.zachung.net";
+const localHost = "//localhost:3000";
+const defaultHost = "//awoo-server.zachung.net";
 
 export default {
   props: {
