@@ -30,7 +30,7 @@ import WorldComponent from "./ui/WorldComponent.vue";
 import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
 import ConnectComponent from "./ui/ConnectComponent.vue";
-import ControlInstructionComponent from './ui/ControlInstructionComponent.vue'
+import ControlInstructionComponent from "./ui/ControlInstructionComponent.vue";
 
 export default {
   components: {
@@ -63,11 +63,10 @@ export default {
   },
   methods: {
     connect(uri) {
-      this.game.connect(uri);
+      this.game.connect(uri, window.location.protocol === "https:");
     },
     start(name, cb) {
-      const promise = this.game
-        .start(name);
+      const promise = this.game.start(name);
       cb(promise);
     }
   },

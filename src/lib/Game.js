@@ -58,12 +58,12 @@ class Game {
       })
   }
 
-  connect (uri) {
+  connect (uri, secure = false) {
     if (this.connecting) {
       return Promise.reject('connecting')
     }
     this.connecting = true
-    const socket = io(uri)
+    const socket = io(uri, { secure })
     const messenger = new Messenger(socket, {
       game: this,
       name: this.props.name,
