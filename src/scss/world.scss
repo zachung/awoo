@@ -1,7 +1,7 @@
 @import "symbols";
 
 #world {
-  align-self: center;
+  align-self: self-start;
   justify-self: center;
   overflow: hidden;
   box-sizing: border-box;
@@ -20,8 +20,8 @@
     position: relative;
 
     &.editing {
-      border-bottom: 1px solid #F0F0F0;
-      border-right: 1px solid #F0F0F0;
+      border-bottom: 1px solid #f0f0f0;
+      border-right: 1px solid #f0f0f0;
 
       &.replace {
         cursor: none;

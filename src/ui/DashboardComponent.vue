@@ -5,32 +5,33 @@
       <div v-if="game.isOn">current players: {{ game.currentOnline }}</div>
       <div v-else-if="game.isConnected" class="info">Take your name</div>
       <div v-else class="info">Choice server first</div>
-    </div>
-    <div class="player-status-panel">
-      <h4>Player</h4>
       <div v-if="player">
         Position:
         {{ player.globalX }}, {{ player.globalY }} ({{
           player.chunk.chunkName
         }})
       </div>
+    </div>
+    <div class="chat-panel">
+      <h4>Chat</h4>
       <ul class="messages">
         <template v-for="log in logs">
           <li v-if="log.type === Types.CHAT">
-            {{ log.time }} [{{ log.name }}]{{ log.message }}
+            <span class="name" :class="{ 'is-self': log.name === player.props.name }">{{ log.name }}</span>: {{ log.message }}
           </li>
           <li v-else :class="log.level">
-            {{ log.time }} [{{ log.level }}]{{ log.message }}
+            [{{ log.level }}]{{ log.message }}
           </li>
         </template>
       </ul>
-      <label v-if="player">
+      <label v-show="player">
         >
         <input
           v-model="message"
           type="text"
+          ref="messageBox"
           @keypress.enter.prevent="sendMessage"
-          @focus="game.controller.disable()"
+          @keydown.esc.prevent="escapeChatBox"
           placeholder="say something"
         />
       </label>
@@ -94,19 +95,26 @@ export default {
       }
     },
     sendMessage() {
-      this.game.messenger.say(this.message);
-      this.message = "";
+      this.$refs.messageBox.blur();
+      if (this.message) {
+        this.game.messenger.say(this.message);
+        this.message = "";
+      }
+    },
+    escapeChatBox() {
+      this.$refs.messageBox.blur();
     }
   },
   mounted() {
     Messages.onLogging(log => this.pushLog(log));
+    this.game.controller.registerChatElement(this.$refs.messageBox);
   }
 };
 </script>
 
 <style scoped>
 .server-status-panel,
-.player-status-panel,
+.chat-panel,
 .secret-functions {
   border: 1px solid gray;
   border-radius: 5px;

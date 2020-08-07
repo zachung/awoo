@@ -6,7 +6,6 @@
         :style="worldStyle"
         :game="game"
         v-if="game.isOn"
-        ref="worldComponent"
       ></world-component>
       <connect-component
         v-else
@@ -20,6 +19,7 @@
         :player="game.player"
       ></dashboard-component>
     </div>
+    <control-instruction-component></control-instruction-component>
     <footer-component></footer-component>
   </div>
 </template>
@@ -30,13 +30,15 @@ import WorldComponent from "./ui/WorldComponent.vue";
 import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
 import ConnectComponent from "./ui/ConnectComponent.vue";
+import ControlInstructionComponent from './ui/ControlInstructionComponent.vue'
 
 export default {
   components: {
     ConnectComponent,
     WorldComponent,
     DashboardComponent,
-    FooterComponent
+    FooterComponent,
+    ControlInstructionComponent
   },
   data() {
     const viewSize = 30;
@@ -65,12 +67,7 @@ export default {
     },
     start(name, cb) {
       const promise = this.game
-        .start(name, () => {
-          this.$refs.worldComponent.render();
-        })
-        .then(player => {
-          player.color = "#226cff";
-        });
+        .start(name);
       cb(promise);
     }
   },

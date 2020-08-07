@@ -22,13 +22,19 @@ class Game {
       viewSize,
       camera
     })
+    this.controller = new Controller({
+      up: 'w',
+      down: 's',
+      left: 'a',
+      right: 'd'
+    })
   }
 
   get player () {
     return this.stage.player
   }
 
-  start (name, cb) {
+  start (name) {
     this.props.name = name
     if (this.starting) {
       return Promise.reject('starting')
@@ -38,17 +44,12 @@ class Game {
       .then(({ x, y }) => {
         return this.stage.focusPlayer(x, y, name).then(player => {
           player.props.name = name
-          this.controller = new Controller(player, this.messenger, {
-            up: 'w',
-            down: 's',
-            left: 'a',
-            right: 'd'
-          })
+          this.controller.init(player, this.messenger)
           return player
         })
       })
       .then(player => {
-        this.startRender(cb)
+        this.startRender()
         this.isOn = true
         return player
       })
@@ -69,15 +70,33 @@ class Game {
       stage: this.stage
     })
     this.stage.setChunkReader(new JsonChunkReader(messenger))
+    this.stage.renewChunks()
     this.messenger = messenger
   }
 
-  startRender (cb) {
+  connected () {
+    this.isConnected = true
+    this.connecting = false
+    const name = this.props.name
+    if (!name) {
+      // 尚未登入
+      return
+    }
+    this.stage.renewChunks()
+    this.messenger.newPlayer(name)
+      .then(({ x, y }) => {
+        return this.stage.focusPlayer(x, y, name).then(player => {
+          this.controller.bind(player)
+          return player
+        })
+      })
+  }
+
+  startRender () {
     // timer for render
     setInterval(() => {
       this.stage
         .cameraFollow()
-        .then(cb)
         .catch(status => {
           if (status === 404) {
             console.log('Map limited')

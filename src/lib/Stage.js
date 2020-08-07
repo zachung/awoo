@@ -39,8 +39,11 @@ class Stage {
   }
 
   setChunkReader (chunkReader) {
-    this.chunks = new Proxy({}, chunksHandler(chunkReader))
     this.chunkReader = chunkReader
+  }
+
+  renewChunks () {
+    this.chunks = new Proxy({}, chunksHandler(this.chunkReader))
   }
 
   cameraFollow () {
@@ -143,6 +146,7 @@ class Stage {
       .then(() => this.getChunkItem(x, y))
       .then(player => {
         this.camera.goto(x, y)
+        player.color = '#226cff'
         player.name = name
         this.player = player
         return player

@@ -30,34 +30,51 @@ const bindKey = (key, symbol, cb) => {
  * @property {Messenger} messenger
  */
 class Controller {
-  constructor (item, messenger, options = {}) {
-    this.item = item
-    this.messenger = messenger
-    this.x = item.globalX
-    this.y = item.globalY
+  constructor (options = {}) {
     this.waitingFeeback = false
-    this.init(options)
+    this.options = options
   }
 
-  init (options) {
+  init (item, messenger) {
+    this.messenger = messenger
+    this.bind(item)
     const {
       up = 'up',
       down = 'down',
       right = 'right',
       left = 'left'
-    } = options
+    } = this.options
 
-    const cb = isKeyDown => {
+    const cb = () => {
       if (this.moving) {
         return
       }
       this.moving = true
       this.startMove()
     }
+    keyboardJS.setContext('in-chat')
+    keyboardJS.bind('enter', e => {
+      keyboardJS.setContext('in-game')
+    })
+    keyboardJS.bind('esc', e => {
+      keyboardJS.setContext('in-game')
+    })
+    keyboardJS.setContext('in-game')
     bindKey(up, UP, cb)
     bindKey(down, DOWN, cb)
     bindKey(right, RIGHT, cb)
     bindKey(left, LEFT, cb)
+    keyboardJS.bind('enter', e => {
+      e.preventDefault()
+      keyboardJS.setContext('in-chat')
+      this.chatElement.focus()
+    })
+  }
+
+  bind (item) {
+    this.item = item
+    this.x = item.globalX
+    this.y = item.globalY
   }
 
   startMove () {
@@ -113,12 +130,8 @@ class Controller {
     })
   }
 
-  enable(focusElement) {
-    keyboardJS.watch(focusElement)
-  }
-
-  disable() {
-    keyboardJS.stop()
+  registerChatElement (chatElement) {
+    this.chatElement = chatElement
   }
 }
 
