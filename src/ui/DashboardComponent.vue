@@ -35,6 +35,7 @@
           </li>
           <li v-else :class="log.level">[{{ log.level }}]{{ log.message }}</li>
         </template>
+        <li class="scroll-to-here"></li>
       </ul>
       <label v-show="player">
         >
@@ -44,6 +45,8 @@
           ref="messageBox"
           @keypress.enter="sendMessage"
           @keydown.esc="escapeChatBox"
+          @keydown.up="selectMessage"
+          @keydown.down="selectMessage"
           @focus="game.controller.chat()"
           @blur="game.controller.game()"
           placeholder="say something"
@@ -77,12 +80,21 @@ export default {
   computed: {
     ...mapGetters("editor", ["isEnable"])
   },
+  watch: {
+    logs() {
+      // keep chat scroll to bottom
+      document.getElementsByClassName("scroll-to-here")[0].scrollIntoView();
+    }
+  },
   data() {
     return {
       Types,
       message: "",
       logs: [],
-      keepMaxMsgCount: 20
+      preMessages: [],
+      selectedMessageInx: 0,
+      maxKeepMsgCount: 50,
+      maxPreMessageCount: 20
     };
   },
   methods: {
@@ -104,19 +116,39 @@ export default {
     },
     pushLog(log) {
       const length = this.logs.push(log);
-      if (length > this.keepMaxMsgCount) {
+      if (length > this.maxKeepMsgCount) {
         this.logs.shift();
       }
     },
     sendMessage() {
       this.$refs.messageBox.blur();
-      if (this.message) {
-        this.game.messenger.say(this.message);
-        this.message = "";
+      const message = this.message;
+      if (!message) {
+        return;
+      }
+      if (message.startsWith("/")) {
+        const strings = message.substr(1).split(" ");
+        this.game.messenger.command(strings.shift(), ...strings);
+      } else {
+        this.game.messenger.say(message);
+      }
+      this.message = "";
+      // remember pre messages
+      const length = this.preMessages.push(message);
+      if (length > this.maxPreMessageCount) {
+        this.preMessages.shift();
       }
     },
     escapeChatBox() {
       this.$refs.messageBox.blur();
+    },
+    selectMessage(e) {
+      e.preventDefault();
+      const offset = e.key === "ArrowUp" ? -1 : 1;
+      const number = this.selectedMessageInx + offset;
+      const max = Math.min(this.preMessages.length, this.maxPreMessageCount);
+      this.selectedMessageInx = ((number % max) + max) % max;
+      this.message = this.preMessages[this.selectedMessageInx];
     }
   },
   mounted() {
@@ -162,5 +194,8 @@ export default {
 }
 .error {
   color: red;
+}
+.scroll-to-here {
+  visibility: hidden;
 }
 </style>

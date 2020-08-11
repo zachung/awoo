@@ -86,7 +86,7 @@ class Game {
     this.messenger.newPlayer(name)
       .then(({ x, y }) => {
         return this.stage.focusPlayer(x, y, name).then(player => {
-          this.controller.bind(player)
+          this.controller.bindItem(player)
           return player
         })
       })

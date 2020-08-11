@@ -38,14 +38,27 @@ class Controller {
 
   init (item, messenger) {
     this.messenger = messenger
-    this.bind(item)
+    this.bindItem(item)
+    this._bindInChat()
+    this._bindInGame()
+  }
+
+  bindItem (item) {
+    this.item = item
+  }
+
+  _bindInChat () {
+    keyboardJS.setContext('in-chat')
+    keyboardJS.bind(['enter', 'esc'], e => this.game())
+  }
+
+  _bindInGame () {
     const {
       up = 'up',
       down = 'down',
       right = 'right',
       left = 'left'
     } = this.options
-
     const cb = () => {
       if (this.moving) {
         return
@@ -53,8 +66,6 @@ class Controller {
       this.moving = true
       this.startMove()
     }
-    keyboardJS.setContext('in-chat')
-    keyboardJS.bind(['enter', 'esc'], e => this.game())
     keyboardJS.setContext('in-game')
     bindKey(up, UP, cb)
     bindKey(down, DOWN, cb)
@@ -65,12 +76,12 @@ class Controller {
       this.chat()
       this.chatElement.focus()
     })
-  }
-
-  bind (item) {
-    this.item = item
-    this.x = item.globalX
-    this.y = item.globalY
+    keyboardJS.bind('/', e => {
+      e.preventDefault()
+      this.chat()
+      this.chatElement.value = '/'
+      this.chatElement.focus()
+    })
   }
 
   startMove () {
@@ -110,14 +121,10 @@ class Controller {
       this.messenger.move(
         {
           name: item.name,
-          x: this.x + dx,
-          y: this.y + dy
+          x: this.item.globalX + dx,
+          y: this.item.globalY + dy
         },
         err => {
-          if (!err) {
-            this.x += dx
-            this.y += dy
-          }
           this.waitingFeeback = false
           // NOTICE: 不會拋錯誤
           resolve(item)
@@ -130,11 +137,11 @@ class Controller {
     this.chatElement = chatElement
   }
 
-  chat() {
+  chat () {
     keyboardJS.setContext('in-chat')
   }
 
-  game() {
+  game () {
     keyboardJS.setContext('in-game')
   }
 }
