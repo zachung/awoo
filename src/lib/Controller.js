@@ -54,12 +54,7 @@ class Controller {
       this.startMove()
     }
     keyboardJS.setContext('in-chat')
-    keyboardJS.bind('enter', e => {
-      keyboardJS.setContext('in-game')
-    })
-    keyboardJS.bind('esc', e => {
-      keyboardJS.setContext('in-game')
-    })
+    keyboardJS.bind(['enter', 'esc'], e => this.game())
     keyboardJS.setContext('in-game')
     bindKey(up, UP, cb)
     bindKey(down, DOWN, cb)
@@ -67,7 +62,7 @@ class Controller {
     bindKey(left, LEFT, cb)
     keyboardJS.bind('enter', e => {
       e.preventDefault()
-      keyboardJS.setContext('in-chat')
+      this.chat()
       this.chatElement.focus()
     })
   }
@@ -133,6 +128,14 @@ class Controller {
 
   registerChatElement (chatElement) {
     this.chatElement = chatElement
+  }
+
+  chat() {
+    keyboardJS.setContext('in-chat')
+  }
+
+  game() {
+    keyboardJS.setContext('in-game')
   }
 }
 

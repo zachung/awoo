@@ -5,6 +5,7 @@
 // * http://shapecatcher.com/
 const Grounds = [
   '', // 0
+  '\u0488', // ҈ 1
 ]
 const Blocks = [
   '\u250E', // ┎ 0
@@ -13,7 +14,7 @@ const Blocks = [
   '\u251A', // ┚ 3
   '\u2501', // ━ 4
   '\u2503', // ┃ 5
-  '&#127794;', // 🌲 6
+  '\uD83C\uDF32', // 🌲 6
   '\ud83d\udcbc', // 💼 7
 ]
 const Items = [

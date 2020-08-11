@@ -1,15 +1,25 @@
 <template>
   <div>
-    <div class="server-status-panel">
-      <h4>Game Status</h4>
+    <div class="status-panel">
+      <h4>Status</h4>
       <div v-if="game.isOn">current players: {{ game.currentOnline }}</div>
       <div v-else-if="game.isConnected" class="info">Take your name</div>
       <div v-else class="info">Choice server first</div>
-      <div v-if="player">
-        Position:
-        {{ player.globalX }}, {{ player.globalY }} ({{
-          player.chunk.chunkName
-        }})
+      <div class="player-container" v-if="player">
+        <p>Player</p>
+        <ul class="player-property">
+          <li>
+            <label>Position:</label>
+            <span>
+              ({{ player.globalX }}, {{ player.globalY }})
+              {{ player.chunk.chunkName }}
+            </span>
+          </li>
+          <li>
+            <label>Props:</label>
+            <span>{{ player.props }}</span>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="chat-panel">
@@ -17,11 +27,13 @@
       <ul class="messages">
         <template v-for="log in logs">
           <li v-if="log.type === Types.CHAT">
-            <span class="name" :class="{ 'is-self': log.name === player.props.name }">{{ log.name }}</span>: {{ log.message }}
+            <span
+              class="name"
+              :class="{ 'is-self': log.name === player.props.name }"
+              >{{ log.name }}</span
+            >: {{ log.message }}
           </li>
-          <li v-else :class="log.level">
-            [{{ log.level }}]{{ log.message }}
-          </li>
+          <li v-else :class="log.level">[{{ log.level }}]{{ log.message }}</li>
         </template>
       </ul>
       <label v-show="player">
@@ -30,8 +42,10 @@
           v-model="message"
           type="text"
           ref="messageBox"
-          @keypress.enter.prevent="sendMessage"
-          @keydown.esc.prevent="escapeChatBox"
+          @keypress.enter="sendMessage"
+          @keydown.esc="escapeChatBox"
+          @focus="game.controller.chat()"
+          @blur="game.controller.game()"
           placeholder="say something"
         />
       </label>
@@ -112,8 +126,9 @@ export default {
 };
 </script>
 
-<style scoped>
-.server-status-panel,
+<style lang="scss" scoped>
+.status-panel,
+.player-container,
 .chat-panel,
 .secret-functions {
   border: 1px solid gray;
@@ -121,9 +136,26 @@ export default {
   padding: 0 1em 1em;
   margin-bottom: 1em;
 }
-.messages {
-  height: 10em;
-  overflow: scroll;
+.status-panel {
+  .player-property {
+    list-style: none;
+    padding-left: 0;
+    font-family: monospace;
+
+    label {
+      width: 5em;
+      display: inline-block;
+    }
+  }
+}
+.player-container {
+  margin: 0;
+}
+.chat-panel {
+  .messages {
+    height: 10em;
+    overflow: scroll;
+  }
 }
 .info {
   color: green;
