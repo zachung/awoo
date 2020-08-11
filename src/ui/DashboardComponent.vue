@@ -138,6 +138,8 @@ export default {
       if (length > this.maxPreMessageCount) {
         this.preMessages.shift();
       }
+      // back to last one
+      this.selectedMessageInx = 0;
     },
     escapeChatBox() {
       this.$refs.messageBox.blur();
