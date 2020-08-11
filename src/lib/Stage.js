@@ -110,6 +110,7 @@ class Stage {
       if (isPlayer) {
         newItem = this.player
         newItem.setLocalPosition(item.x, item.y)
+        newItem.props = item.props
       } else {
         newItem = item
       }

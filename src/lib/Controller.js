@@ -21,6 +21,7 @@ const bindKey = (key, symbol, cb) => {
     },
     e => {
       Keys[symbol] = 0
+      cb()
     }
   )
 }

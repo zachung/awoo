@@ -28,6 +28,33 @@
       }
     }
 
+    .symbol {
+      &.face-north {
+        transform: rotate(-90deg);
+      }
+      &.face-east-north {
+        transform: rotate(-45deg);
+      }
+      &.face-east {
+        transform: rotate(0deg);
+      }
+      &.face-east-south {
+        transform: rotate(45deg);
+      }
+      &.face-south {
+        transform: rotate(90deg);
+      }
+      &.face-west-south {
+        transform: rotate(135deg);
+      }
+      &.face-west {
+        transform: rotate(180deg);
+      }
+      &.face-west-north {
+        transform: rotate(225deg);
+      }
+    }
+
     img {
       width: 100%;
       height: 100%;

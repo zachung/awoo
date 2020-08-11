@@ -19,7 +19,11 @@
           <div v-if="item.props.name" class="tile-name">
             {{ item.props.name }}
           </div>
-          <div v-html="symbol(item)"></div>
+          <div
+            class="symbol"
+            v-html="symbol(item)"
+            :class="symbolClass(item)"
+          ></div>
         </div>
       </div>
     </template>
@@ -32,6 +36,17 @@ import { Item } from "awoo-core";
 import Symbols from "../lib/Symbols";
 
 const { mapGetters, mapActions } = createNamespacedHelpers("editor");
+const FaceClass = [
+  "",
+  "north",
+  "south",
+  "west",
+  "west-north",
+  "west-south",
+  "east",
+  "east-north",
+  "east-south"
+];
 
 export default {
   name: "WorldComponent",
@@ -68,6 +83,12 @@ export default {
         color: item.color,
         "background-color": item.bgColor
       };
+    },
+    symbolClass(item) {
+      const face = parseInt(item.props.face, 3);
+      const classes = [];
+      classes.push(`face-${FaceClass[face]}`);
+      return classes;
     },
     changeSymbol(item) {
       if (!this.isEnable) {
