@@ -71,10 +71,10 @@ export default {
     }
   },
   mounted() {
-    this.connect("//localhost:3000");
-    setTimeout(() => {
-      this.start("brian", () => {});
-    }, 10);
+    // this.connect("//localhost:3000");
+    // setTimeout(() => {
+    //   this.start("brian", () => {});
+    // }, 10);
   }
 };
 </script>
