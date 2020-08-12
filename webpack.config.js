@@ -2,6 +2,7 @@ const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/index.js',
@@ -64,7 +65,8 @@ module.exports = {
           flatten: true
         }
       ]
-    })
+    }),
+    new Dotenv()
   ],
   node: {
     fs: 'empty'

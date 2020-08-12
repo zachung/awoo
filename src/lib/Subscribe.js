@@ -1,7 +1,3 @@
-import dotenv from 'dotenv'
-
-dotenv.config()
-
 const applicationServerPublicKey = process.env.PUBLIC_KEY
 
 function urlB64ToUint8Array (base64String) {
