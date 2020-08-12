@@ -22,7 +22,6 @@ export const subscribeUser = (swRegistration, messenger) => {
     })
     .then(subscription => {
       console.log('User is subscribed')
-      console.log(JSON.stringify(subscription))
       messenger.subscribe(subscription)
     })
     .catch(err => {
