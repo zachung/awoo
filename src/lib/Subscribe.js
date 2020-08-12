@@ -1,4 +1,8 @@
-const applicationServerPublicKey = `BBfICJF039kEkgVzL5zYPpR5fmm28S1VtwdEvh1Kr5aSsKZ5aEzVKVNZXVc7C-oQpe5E_F1r7CVgwsdtxvtq-_Y`
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const applicationServerPublicKey = process.env.PUBLIC_KEY
 
 function urlB64ToUint8Array (base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
