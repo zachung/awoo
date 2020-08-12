@@ -3,7 +3,6 @@ const filesToCache = [
   'favicon.ico',
   'index.html',
   'main.js',
-  'register-sw.js',
   'service-worker.js',
   'main.css',
   'images/icon.png'

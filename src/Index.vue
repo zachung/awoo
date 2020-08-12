@@ -31,6 +31,7 @@ import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
 import ConnectComponent from "./ui/ConnectComponent.vue";
 import ControlInstructionComponent from "./ui/ControlInstructionComponent.vue";
+import ServiceWorkerRegister from "./service_worker/ServiceWorkerRegister";
 
 export default {
   components: {
@@ -47,9 +48,12 @@ export default {
       viewSize,
       cameraDelta: { x: delta, y: delta }
     });
+    const serviceWorkerRegister = new ServiceWorkerRegister();
+    serviceWorkerRegister.register();
     return {
       game,
-      viewSize
+      viewSize,
+      serviceWorkerRegister
     };
   },
   computed: {
@@ -66,7 +70,9 @@ export default {
       this.game.connect(uri);
     },
     start(name, cb) {
-      const promise = this.game.start(name);
+      const promise = this.game.start(name).then(() => {
+        this.serviceWorkerRegister.subscribe(this.game.messenger);
+      });
       cb(promise);
     }
   },

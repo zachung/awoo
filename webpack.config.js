@@ -60,7 +60,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'src/service_worker/*.js',
+          from: 'src/service_worker/service-worker.js',
           flatten: true
         }
       ]

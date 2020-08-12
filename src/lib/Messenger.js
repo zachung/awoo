@@ -56,6 +56,10 @@ class Messenger {
   command (cmd, ...args) {
     this.socket.emit('command', { cmd, args }, err => Messages.error(err))
   }
+
+  subscribe (subscription) {
+    this.socket.emit('subscription', subscription)
+  }
 }
 
 export default Messenger
