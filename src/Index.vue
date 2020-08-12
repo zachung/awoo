@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="container no-select">
+  <div id="app" class="no-select" @contextmenu.prevent="">
+    <div class="container">
       <world-component
         id="world"
         :style="worldStyle"

@@ -3,6 +3,9 @@
 body {
   margin: 0;
 }
+#app {
+  min-height: 100vh;
+}
 .container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

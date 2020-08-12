@@ -1,6 +1,7 @@
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
@@ -18,14 +19,12 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader'
-      }, {
+      },
+      {
         test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'style-loader',
-          'css-loader'
-        ]
-      }, {
+        use: ['vue-style-loader', 'style-loader', 'css-loader']
+      },
+      {
         test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
@@ -34,17 +33,17 @@ module.exports = {
             options: {
               sourceMap: true,
               url: false
-            },
+            }
           },
           {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
               sassOptions: {
-                outputStyle: 'compressed',
-              },
-            },
-          },
+                outputStyle: 'compressed'
+              }
+            }
+          }
         ]
       }
     ]
@@ -56,8 +55,16 @@ module.exports = {
       // Options similar to the same options in webpackOptions.output
       // both options are optional
       filename: '[name].css',
-      chunkFilename: '[id].css',
+      chunkFilename: '[id].css'
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/service_worker/*.js',
+          flatten: true
+        }
+      ]
+    })
   ],
   node: {
     fs: 'empty'

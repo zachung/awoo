@@ -1,0 +1,10 @@
+{
+  "name": "Awoo Adventure",
+  "description": "Game for adventure",
+  "icons": [{
+    "src": "images/icon.png",
+    "sizes": "256x256"
+  }],
+  "start_url": "index.html",
+  "display": "standalone"
+}
