@@ -8,10 +8,22 @@
       <div class="player-container" v-if="player">
         <div style="float: right">
           <label v-if="!this.isSubscribed">
-            <button type="button" @click.prevent="subscribe" :disabled="switchingSubscribe">開啟通知</button>
+            <button
+              type="button"
+              @click.prevent="subscribe"
+              :disabled="switchingSubscribe"
+            >
+              開啟通知
+            </button>
           </label>
           <label v-else>
-            <button type="button" @click.prevent="unsubscribe" :disabled="switchingSubscribe">關閉通知</button>
+            <button
+              type="button"
+              @click.prevent="unsubscribe"
+              :disabled="switchingSubscribe"
+            >
+              關閉通知
+            </button>
           </label>
         </div>
         <p>Player</p>
@@ -167,6 +179,9 @@ export default {
       this.game
         .subscribe()
         .then(() => (this.isSubscribed = true))
+        .catch(err => {
+          Messages.error("Failed to subscribe the user: ", err);
+        })
         .finally(() => (this.switchingSubscribe = false));
     },
     unsubscribe() {
@@ -174,6 +189,9 @@ export default {
       this.game
         .unsubscribe()
         .then(() => (this.isSubscribed = false))
+        .catch(error => {
+          Messages.error("Error unsubscribing", error);
+        })
         .finally(() => (this.switchingSubscribe = false));
     }
   },

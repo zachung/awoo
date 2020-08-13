@@ -123,9 +123,6 @@ class Game {
         console.log('User is subscribed')
         this.messenger.subscribe(subscription)
       })
-      .catch(err => {
-        console.log('Failed to subscribe the user: ', err)
-      })
   }
 
   unsubscribe () {
@@ -134,9 +131,6 @@ class Game {
       .then(() => {
         this.messenger.subscribe()
         console.log('User is unsubscribed.')
-      })
-      .catch(error => {
-        console.log('Error unsubscribing', error)
       })
   }
 }
