@@ -6,6 +6,14 @@
       <div v-else-if="game.isConnected" class="info">Take your name</div>
       <div v-else class="info">Choice server first</div>
       <div class="player-container" v-if="player">
+        <div style="float: right">
+          <label v-if="!this.isSubscribed">
+            <button type="button" @click.prevent="subscribe" :disabled="switchingSubscribe">開啟通知</button>
+          </label>
+          <label v-else>
+            <button type="button" @click.prevent="unsubscribe" :disabled="switchingSubscribe">關閉通知</button>
+          </label>
+        </div>
         <p>Player</p>
         <ul class="player-property">
           <li>
@@ -94,7 +102,9 @@ export default {
       preMessages: [],
       selectedMessageInx: 0,
       maxKeepMsgCount: 50,
-      maxPreMessageCount: 20
+      maxPreMessageCount: 20,
+      isSubscribed: this.game.serviceWorkerRegister.isSubscribed,
+      switchingSubscribe: false
     };
   },
   methods: {
@@ -151,6 +161,20 @@ export default {
       const max = Math.min(this.preMessages.length, this.maxPreMessageCount);
       this.selectedMessageInx = ((number % max) + max) % max;
       this.message = this.preMessages[this.selectedMessageInx];
+    },
+    subscribe() {
+      this.switchingSubscribe = true;
+      this.game
+        .subscribe()
+        .then(() => (this.isSubscribed = true))
+        .finally(() => (this.switchingSubscribe = false));
+    },
+    unsubscribe() {
+      this.switchingSubscribe = true;
+      this.game
+        .unsubscribe()
+        .then(() => (this.isSubscribed = false))
+        .finally(() => (this.switchingSubscribe = false));
     }
   },
   mounted() {
@@ -170,6 +194,7 @@ export default {
   padding: 0 1em 1em;
   margin-bottom: 1em;
 }
+
 .status-panel {
   .player-property {
     list-style: none;
@@ -182,21 +207,26 @@ export default {
     }
   }
 }
+
 .player-container {
   margin: 0;
 }
+
 .chat-panel {
   .messages {
     height: 10em;
     overflow: scroll;
   }
 }
+
 .info {
   color: green;
 }
+
 .error {
   color: red;
 }
+
 .scroll-to-here {
   visibility: hidden;
 }

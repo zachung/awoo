@@ -1,4 +1,4 @@
-const cacheVersion = 'v1'
+const cacheVersion = 'v1.0.0'
 const filesToCache = [
   'favicon.ico',
   'index.html',

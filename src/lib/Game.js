@@ -4,6 +4,7 @@ import io from 'socket.io-client'
 import Messenger from './Messenger'
 import Camera from './Camera'
 import Controller from './Controller'
+import ServiceWorkerRegister from '../service_worker/ServiceWorkerRegister'
 
 /**
  * @property {Stage} stage
@@ -28,6 +29,9 @@ class Game {
       left: 'a',
       right: 'd'
     })
+    const serviceWorkerRegister = new ServiceWorkerRegister()
+    serviceWorkerRegister.register()
+    this.serviceWorkerRegister = serviceWorkerRegister
   }
 
   get player () {
@@ -40,7 +44,8 @@ class Game {
       return Promise.reject('starting')
     }
     this.starting = true
-    return this.messenger.newPlayer(name)
+    return this.messenger
+      .newPlayer(name)
       .then(({ x, y }) => {
         return this.stage.focusPlayer(x, y, name).then(player => {
           player.props.name = name
@@ -83,27 +88,24 @@ class Game {
       return
     }
     this.stage.renewChunks()
-    this.messenger.newPlayer(name)
-      .then(({ x, y }) => {
-        return this.stage.focusPlayer(x, y, name).then(player => {
-          this.controller.bindItem(player)
-          return player
-        })
+    this.messenger.newPlayer(name).then(({ x, y }) => {
+      return this.stage.focusPlayer(x, y, name).then(player => {
+        this.controller.bindItem(player)
+        return player
       })
+    })
   }
 
   startRender () {
     // timer for render
     setInterval(() => {
-      this.stage
-        .cameraFollow()
-        .catch(status => {
-          if (status === 404) {
-            console.log('Map limited')
-            return
-          }
-          console.log(status)
-        })
+      this.stage.cameraFollow().catch(status => {
+        if (status === 404) {
+          console.log('Map limited')
+          return
+        }
+        console.log(status)
+      })
     }, 16)
   }
 
@@ -112,6 +114,30 @@ class Game {
       chunks.forEach(cb)
       return chunks
     })
+  }
+
+  subscribe () {
+    return this.serviceWorkerRegister
+      .subscribe()
+      .then(subscription => {
+        console.log('User is subscribed')
+        this.messenger.subscribe(subscription)
+      })
+      .catch(err => {
+        console.log('Failed to subscribe the user: ', err)
+      })
+  }
+
+  unsubscribe () {
+    return this.serviceWorkerRegister
+      .unsubscribe()
+      .then(() => {
+        this.messenger.subscribe()
+        console.log('User is unsubscribed.')
+      })
+      .catch(error => {
+        console.log('Error unsubscribing', error)
+      })
   }
 }
 

@@ -18,17 +18,27 @@ class ServiceWorkerRegister {
             console.log('Notification permission status:', status)
           })
         }
+        reg.pushManager.getSubscription().then(subscription => {
+          this.isSubscribed = !!subscription
+        })
         this.reg = reg
       })
     }
   }
 
   subscribe (messenger) {
-    subscribeUser(this.reg, messenger)
+    return subscribeUser(this.reg, messenger)
+      .then(subscription => {
+        this.isSubscribed = true
+        return subscription
+      })
   }
 
   unsubscribe (messenger) {
-    unsubscribeUser(this.reg, messenger)
+    return unsubscribeUser(this.reg, messenger)
+      .then(() => {
+        this.isSubscribed = false
+      })
   }
 }
 

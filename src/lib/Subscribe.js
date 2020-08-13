@@ -13,34 +13,19 @@ function urlB64ToUint8Array (base64String) {
   return outputArray
 }
 
-export const subscribeUser = (swRegistration, messenger) => {
+export const subscribeUser = swRegistration => {
   const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey)
-  swRegistration.pushManager
-    .subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: applicationServerKey
-    })
-    .then(subscription => {
-      console.log('User is subscribed')
-      messenger.subscribe(subscription)
-    })
-    .catch(err => {
-      console.log('Failed to subscribe the user: ', err)
-    })
+  return swRegistration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: applicationServerKey
+  })
 }
-export const unsubscribeUser = (swRegistration, messenger) => {
-  swRegistration.pushManager
+export const unsubscribeUser = swRegistration => {
+  return swRegistration.pushManager
     .getSubscription()
     .then(function (subscription) {
       if (subscription) {
         return subscription.unsubscribe()
       }
-    })
-    .catch(function (error) {
-      console.log('Error unsubscribing', error)
-    })
-    .then(function () {
-      messenger.subscribe(null)
-      console.log('User is unsubscribed.')
     })
 }
