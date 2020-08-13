@@ -8,6 +8,7 @@ const filesToCache = [
   'images/icon.png'
 ]
 self.addEventListener('install', event => {
+  self.skipWaiting()
   console.log('[ServiceWorker] Install')
   // 進行檔案快取，讓離線時也能顯示頁面
   event.waitUntil(
