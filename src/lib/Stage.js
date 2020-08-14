@@ -31,7 +31,7 @@ class Stage {
     for (let x = 0; x < viewSize; x++) {
       this.map[x] = []
       for (let y = 0; y < viewSize; y++) {
-        this.map[x][y] = undefined
+        this.map[x][y] = []
       }
     }
     this.viewSize = viewSize
@@ -52,10 +52,8 @@ class Stage {
     return this.loadNearChunks(x, y).then(() => {
       for (let mapX = 0; mapX < this.viewSize; mapX++) {
         for (let mapY = 0; mapY < this.viewSize; mapY++) {
-          this.getChunkItem(mapX + x, mapY + y).then(item => {
-            if (item) {
-              this.map[mapY].splice(mapX, 1, item)
-            }
+          this.getChunkItem(mapX + x, mapY + y).then(items => {
+            this.map[mapY].splice(mapX, 1, items)
           })
         }
       }
@@ -83,11 +81,15 @@ class Stage {
   /**
    * @param x
    * @param y
-   * @return {Promise<Item>}
+   * @return {Promise<Item[]>}
    */
   getChunkItem (x, y) {
+    const offsetX = round(x)
+    const offsetY = round(y)
     return this.getChunkByLoc(x, y).then(chunk => {
-      return chunk.getItem(round(x), round(y))
+      return [chunk.groundLayer, chunk.itemLayer].map(layer => {
+        return layer.getItem(offsetX, offsetY)
+      })
     })
   }
 
@@ -132,9 +134,8 @@ class Stage {
   }
 
   save (cb) {
-    return Promise.resolve(
-      Object.values(this.chunks).filter(chunk => chunk.isDirty)
-    )
+    return Promise.all(Object.values(this.chunks))
+      .then(chunks => chunks.filter(chunk => chunk.isDirty))
       .then(cb)
       .then(chunks => {
         chunks.forEach(chunk => (chunk.isDirty = false))
@@ -145,7 +146,8 @@ class Stage {
     this.camera.goto(x, y)
     return this.cameraFollow()
       .then(() => this.getChunkItem(x, y))
-      .then(player => {
+      .then(items => {
+        const player = items[1]
         this.camera.goto(x, y)
         player.color = '#226cff'
         player.name = name

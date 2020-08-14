@@ -1,30 +1,14 @@
 <template>
   <div :class="{ editing: isEnable }">
     <template v-for="row in game.stage.map" class="tile">
-      <div
-        v-for="item in row"
-        class="tile"
-        :class="tileClass"
-        :style="tileStyle(item)"
-        :data-x="item.globalX"
-        :data-y="item.globalY"
-        :data-chunk="item.chunk ? item.chunk.chunkName : ''"
-        @click="changeSymbol(item)"
-        @contextmenu.prevent="removeSymbol(item)"
-      >
-        <template v-if="isUrl(item)">
-          <img :src="symbol(item)" alt="" />
-        </template>
-        <div v-else>
-          <div v-if="item.props.name" class="tile-name">
-            {{ item.props.name }}
-          </div>
-          <div
-            class="symbol"
-            v-html="symbol(item)"
-            :class="symbolClass(item)"
-          ></div>
-        </div>
+      <div v-for="items in row" class="tile" :class="tileClass">
+        <tile-component v-if="items[0]" :item="items[0]"></tile-component>
+        <tile-component
+          v-if="items[1]"
+          :item="items[1]"
+          @click="changeSymbol(items[1])"
+          @contextmenu.prevent="removeSymbol(items[1])"
+        ></tile-component>
       </div>
     </template>
   </div>
@@ -33,23 +17,14 @@
 <script>
 import { createNamespacedHelpers } from "vuex";
 import { Item } from "awoo-core";
-import Symbols from "../lib/Symbols";
+import TileComponent from "./TileComponent.vue";
 
-const { mapGetters, mapActions } = createNamespacedHelpers("editor");
-const FaceClass = [
-  "",
-  "north",
-  "south",
-  "west",
-  "west-north",
-  "west-south",
-  "east",
-  "east-north",
-  "east-south"
-];
+const { mapGetters } = createNamespacedHelpers("editor");
 
 export default {
-  name: "WorldComponent",
+  components: {
+    TileComponent
+  },
   props: {
     game: Object
   },
@@ -66,30 +41,7 @@ export default {
       return newVar;
     }
   },
-  data() {
-    return {
-      Symbols
-    };
-  },
   methods: {
-    symbol(item) {
-      if (item.type === undefined) {
-        return "";
-      }
-      return this.Symbols[item.type][item.id];
-    },
-    tileStyle(item) {
-      return {
-        color: item.color,
-        "background-color": item.bgColor
-      };
-    },
-    symbolClass(item) {
-      const face = parseInt(item.props.face, 3);
-      const classes = [];
-      classes.push(`face-${FaceClass[face]}`);
-      return classes;
-    },
     changeSymbol(item) {
       if (!this.isEnable) {
         return;
@@ -111,22 +63,10 @@ export default {
         return;
       }
       item.removeSelf();
-    },
-    isUrl(item) {
-      const symbol = this.symbol(item);
-      return symbol !== undefined && symbol.length > 10;
     }
   },
   mounted() {}
 };
 </script>
 
-<style scoped>
-.tile-name {
-  position: absolute;
-  top: -1em;
-  left: -5em;
-  width: 11em;
-  text-align: center;
-}
-</style>
+<style scoped></style>

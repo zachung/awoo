@@ -7,12 +7,7 @@
         :game="game"
         v-if="game.isOn"
       ></world-component>
-      <connect-component
-        v-else
-        :game="game"
-        @connect="connect"
-        @start="start"
-      ></connect-component>
+      <connect-component v-else :game="game" @start="start"></connect-component>
       <dashboard-component
         class="dashboard"
         :game="game"
@@ -31,6 +26,7 @@ import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
 import ConnectComponent from "./ui/ConnectComponent.vue";
 import ControlInstructionComponent from "./ui/ControlInstructionComponent.vue";
+import { ServerHost, Env } from "./lib/Env";
 
 export default {
   components: {
@@ -62,19 +58,17 @@ export default {
     }
   },
   methods: {
-    connect(uri) {
-      this.game.connect(uri);
-    },
     start(name, cb) {
       const promise = this.game.start(name);
       cb(promise);
     }
   },
   mounted() {
-    // this.connect("//localhost:3000");
-    // setTimeout(() => {
-    //   this.start("brian", () => {});
-    // }, 10);
+    this.game.connect(ServerHost, () => {
+      if (Env === "dev") {
+        this.start("brian-name", () => {});
+      }
+    });
   }
 };
 </script>

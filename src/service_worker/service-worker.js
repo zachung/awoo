@@ -1,11 +1,11 @@
-const cacheVersion = 'v1.0.1'
+const cacheVersion = 'v1.0.2'
 const filesToCache = [
-  'favicon.ico',
-  'index.html',
-  'main.js',
-  'service-worker.js',
-  'main.css',
-  'images/icon.png'
+  // 'favicon.ico',
+  // 'index.html',
+  // 'main.js',
+  // 'service-worker.js',
+  // 'main.css',
+  // 'images/icon.png'
 ]
 self.addEventListener('install', event => {
   self.skipWaiting()

@@ -1,21 +1,9 @@
 <template>
   <div class="connect-container">
-    <form action="#" @submit.prevent="customConnect" v-if="!game.isConnected">
-      <h3>Server List</h3>
-      <ul class="server-list">
-        <li>
-          <button @click.prevent="connect(defaultHost)">awoo-server</button>
-        </li>
-        <li>
-          <button @click.prevent="connect(localHost)">localhost</button>
-        </li>
-        <li>
-          <button type="submit">Custom</button>
-          <input v-model="uri" type="text" placeholder="uri" />
-        </li>
-      </ul>
-    </form>
-    <form action="#" @submit.prevent="login" v-if="game.isConnected">
+    <div v-if="!game.isConnected">
+      <h3>連線中...</h3>
+    </div>
+    <form action="#" @submit.prevent="login" v-else>
       <label for="name">name</label>
       <input id="name" v-model="name" type="text" />
       <button type="submit" :disabled="nowLogin">Login</button>
@@ -31,9 +19,6 @@
 <script>
 import Messages from "../lib/Messages";
 
-const localHost = "//localhost:3000";
-const defaultHost = "//awoo-server.zachung.net";
-
 export default {
   props: {
     game: Object
@@ -41,28 +26,11 @@ export default {
   data() {
     return {
       errors: [],
-      localHost,
-      defaultHost,
-      uri: "",
       name: "brian",
       nowLogin: false
     };
   },
   methods: {
-    customConnect() {
-      this.errors = [];
-      if (!this.uri) {
-        this.errors.push("Server uri required.");
-        return;
-      }
-      if (this.game.connecting) {
-        return;
-      }
-      this.connect(this.uri);
-    },
-    connect(uri) {
-      this.$emit("connect", uri);
-    },
     login() {
       this.errors = [];
       if (!this.name) {

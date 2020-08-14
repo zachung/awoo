@@ -1,4 +1,4 @@
-const applicationServerPublicKey = process.env.PUBLIC_KEY
+import { ServerPublicKey } from './Env'
 
 function urlB64ToUint8Array (base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
@@ -14,7 +14,7 @@ function urlB64ToUint8Array (base64String) {
 }
 
 export const subscribeUser = swRegistration => {
-  const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey)
+  const applicationServerKey = urlB64ToUint8Array(ServerPublicKey)
   return swRegistration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: applicationServerKey

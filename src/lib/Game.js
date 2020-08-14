@@ -63,7 +63,7 @@ class Game {
       })
   }
 
-  connect (uri) {
+  connect (uri, afterConnected) {
     if (this.connecting) {
       return Promise.reject('connecting')
     }
@@ -77,6 +77,7 @@ class Game {
     this.stage.setChunkReader(new JsonChunkReader(messenger))
     this.stage.renewChunks()
     this.messenger = messenger
+    this.afterConnected = afterConnected
   }
 
   connected () {
@@ -85,6 +86,9 @@ class Game {
     const name = this.props.name
     if (!name) {
       // 尚未登入
+      if (this.afterConnected) {
+        this.afterConnected()
+      }
       return
     }
     this.stage.renewChunks()
