@@ -50,13 +50,9 @@ class Game {
         return this.stage.focusPlayer(x, y, name).then(player => {
           player.props.name = name
           this.controller.init(player, this.messenger)
+          this.isOn = true
           return player
         })
-      })
-      .then(player => {
-        this.startRender()
-        this.isOn = true
-        return player
       })
       .finally(() => {
         this.starting = false
@@ -98,19 +94,6 @@ class Game {
         return player
       })
     })
-  }
-
-  startRender () {
-    // timer for render
-    setInterval(() => {
-      this.stage.cameraFollow().catch(status => {
-        if (status === 404) {
-          console.log('Map limited')
-          return
-        }
-        console.log(status)
-      })
-    }, 16)
   }
 
   save (cb) {

@@ -66,7 +66,7 @@ export default {
   mounted() {
     this.game.connect(ServerHost, () => {
       if (Env === "dev") {
-        this.start("brian-name", () => {});
+        this.start("brian", () => {});
       }
     });
   }

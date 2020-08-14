@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       errors: [],
-      name: "brian",
+      name: "",
       nowLogin: false
     };
   },

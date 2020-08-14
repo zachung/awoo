@@ -121,6 +121,7 @@ class Stage {
         this.camera.gotoItem(newItem)
       }
     })
+      .then(() => this.cameraFollow())
   }
 
   move (chunk, item, x, y) {
