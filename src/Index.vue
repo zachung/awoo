@@ -2,8 +2,6 @@
   <div id="app" class="no-select" @contextmenu.prevent="">
     <div class="container">
       <world-component
-        id="world"
-        :style="worldStyle"
         :world="game.stage.map"
         v-if="game.isOn"
       ></world-component>
@@ -37,7 +35,7 @@ export default {
     ControlInstructionComponent
   },
   data() {
-    const viewSize = 30;
+    const viewSize = Math.floor(window.innerWidth / 20);
     const delta = Math.floor(-viewSize / 2);
     const game = new Game({
       viewSize,
@@ -47,15 +45,6 @@ export default {
       game,
       viewSize
     };
-  },
-  computed: {
-    worldStyle() {
-      return {
-        display: "inline-grid",
-        "grid-template-rows": "repeat(" + this.viewSize + ", 1em)",
-        "grid-template-columns": "repeat(" + this.viewSize + ", 1em)"
-      };
-    }
   },
   methods: {
     start(name, cb) {

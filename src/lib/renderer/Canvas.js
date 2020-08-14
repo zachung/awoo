@@ -25,9 +25,10 @@ class Canvas {
 
     // init
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+
     const origin = world[0][0][0]
-    this.dx = origin.globalX - 2
-    this.dy = origin.globalY - 2
+    this.dx = origin.globalX
+    this.dy = origin.globalY
     // start draw world
     world.forEach(row => {
       row.forEach(col => {

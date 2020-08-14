@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <canvas ref="world" :class="{ editing: isEnable }"> </canvas>
-  </div>
+  <canvas id="world" ref="world" :class="{ editing: isEnable }"></canvas>
 </template>
 
 <script>
@@ -35,7 +33,7 @@ export default {
   data() {
     return {
       canvas: new Canvas({
-        pixelSize: 22,
+        pixelSize: 20,
         debug: false
       })
     };

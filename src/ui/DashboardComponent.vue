@@ -1,85 +1,95 @@
 <template>
   <div>
-    <div class="status-panel">
-      <h4>Status</h4>
-      <div v-if="game.isOn">current players: {{ game.currentOnline }}</div>
-      <div v-else-if="game.isConnected" class="info">Take your name</div>
-      <div v-else class="info">Choice server first</div>
-      <div class="player-container" v-if="player">
-        <div style="float: right">
-          <label v-if="!this.isSubscribed">
-            <button
-              type="button"
-              @click.prevent="subscribe"
-              :disabled="switchingSubscribe"
-            >
-              開啟通知
-            </button>
-          </label>
-          <label v-else>
-            <button
-              type="button"
-              @click.prevent="unsubscribe"
-              :disabled="switchingSubscribe"
-            >
-              關閉通知
-            </button>
-          </label>
-        </div>
-        <p>Player</p>
-        <ul class="player-property">
-          <li>
-            <label>Position:</label>
-            <span>
-              ({{ player.globalX }}, {{ player.globalY }})
-              {{ player.chunk.chunkName }}
-            </span>
-          </li>
-          <li>
-            <label>Props:</label>
-            <span>{{ player.props }}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="chat-panel">
-      <h4>Chat</h4>
-      <ul class="messages">
-        <template v-for="log in logs">
-          <li v-if="log.type === Types.CHAT">
-            <span
-              class="name"
-              :class="{ 'is-self': log.name === player.props.name }"
-              >{{ log.name }}</span
-            >: {{ log.message }}
-          </li>
-          <li v-else :class="log.level">[{{ log.level }}]{{ log.message }}</li>
-        </template>
-        <li class="scroll-to-here"></li>
-      </ul>
-      <label v-show="player">
-        >
-        <input
-          v-model="message"
-          type="text"
-          ref="messageBox"
-          @keypress.enter="sendMessage"
-          @keydown.esc="escapeChatBox"
-          @keydown.up="selectMessage"
-          @keydown.down="selectMessage"
-          @focus="game.controller.chat()"
-          @blur="game.controller.game()"
-          placeholder="say something"
-        />
-      </label>
-    </div>
-    <div class="secret-functions">
-      <h5>secret functions</h5>
-      <button @click="save">save</button>
-      <button @click="setEnable(!isEnable)">
-        {{ isEnable ? "Done" : "Edit Map" }}
+    <div style="float: right">
+      <button v-if="!isShowDashboard" @click="isShowDashboard = true">
+        show
       </button>
-      <symbols-component v-if="isEnable"></symbols-component>
+      <button v-else @click="isShowDashboard = false">hide</button>
+    </div>
+    <div v-if="isShowDashboard">
+      <div class="status-panel">
+        <h4>Status</h4>
+        <div v-if="game.isOn">current players: {{ game.currentOnline }}</div>
+        <div v-else-if="game.isConnected" class="info">Take your name</div>
+        <div v-else class="info">Choice server first</div>
+        <div class="player-container" v-if="player">
+          <div style="float: right">
+            <label v-if="!this.isSubscribed">
+              <button
+                type="button"
+                @click.prevent="subscribe"
+                :disabled="switchingSubscribe"
+              >
+                開啟通知
+              </button>
+            </label>
+            <label v-else>
+              <button
+                type="button"
+                @click.prevent="unsubscribe"
+                :disabled="switchingSubscribe"
+              >
+                關閉通知
+              </button>
+            </label>
+          </div>
+          <p>Player</p>
+          <ul class="player-property">
+            <li>
+              <label>Position:</label>
+              <span>
+                ({{ player.globalX }}, {{ player.globalY }})
+                {{ player.chunk.chunkName }}
+              </span>
+            </li>
+            <li>
+              <label>Props:</label>
+              <span>{{ player.props }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="chat-panel">
+        <h4>Chat</h4>
+        <ul class="messages">
+          <template v-for="log in logs">
+            <li v-if="log.type === Types.CHAT">
+              <span
+                class="name"
+                :class="{ 'is-self': log.name === player.props.name }"
+                >{{ log.name }}</span
+              >: {{ log.message }}
+            </li>
+            <li v-else :class="log.level">
+              [{{ log.level }}]{{ log.message }}
+            </li>
+          </template>
+          <li class="scroll-to-here"></li>
+        </ul>
+        <label v-show="player">
+          >
+          <input
+            v-model="message"
+            type="text"
+            ref="messageBox"
+            @keypress.enter="sendMessage"
+            @keydown.esc="escapeChatBox"
+            @keydown.up="selectMessage"
+            @keydown.down="selectMessage"
+            @focus="game.controller.chat()"
+            @blur="game.controller.game()"
+            placeholder="say something"
+          />
+        </label>
+      </div>
+      <div class="secret-functions">
+        <h5>secret functions</h5>
+        <button @click="save">save</button>
+        <button @click="setEnable(!isEnable)">
+          {{ isEnable ? "Done" : "Edit Map" }}
+        </button>
+        <symbols-component v-if="isEnable"></symbols-component>
+      </div>
     </div>
   </div>
 </template>
@@ -109,6 +119,7 @@ export default {
   data() {
     return {
       Types,
+      isShowDashboard: true,
       message: "",
       logs: [],
       preMessages: [],
@@ -233,7 +244,7 @@ export default {
 .chat-panel {
   .messages {
     height: 10em;
-    overflow: scroll;
+    overflow: auto;
   }
 }
 
