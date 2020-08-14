@@ -4,7 +4,7 @@
       <world-component
         id="world"
         :style="worldStyle"
-        :game="game"
+        :world="game.stage.map"
         v-if="game.isOn"
       ></world-component>
       <connect-component v-else :game="game" @start="start"></connect-component>
@@ -21,7 +21,7 @@
 
 <script>
 import Game from "./lib/Game";
-import WorldComponent from "./ui/WorldComponent.vue";
+import CanvasWorldComponent from "./ui/CanvasWorldComponent.vue";
 import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
 import ConnectComponent from "./ui/ConnectComponent.vue";
@@ -31,7 +31,7 @@ import { ServerHost, Env } from "./lib/Env";
 export default {
   components: {
     ConnectComponent,
-    WorldComponent,
+    WorldComponent: CanvasWorldComponent,
     DashboardComponent,
     FooterComponent,
     ControlInstructionComponent

@@ -1,16 +1,6 @@
 <template>
-  <div :class="{ editing: isEnable }">
-    <template v-for="row in world" class="tile">
-      <div v-for="items in row" class="tile" :class="tileClass">
-        <tile-component v-if="items[0]" :item="items[0]"></tile-component>
-        <tile-component
-          v-if="items[1]"
-          :item="items[1]"
-          @click="changeSymbol(items[1])"
-          @contextmenu.prevent="removeSymbol(items[1])"
-        ></tile-component>
-      </div>
-    </template>
+  <div>
+    <canvas ref="world" :class="{ editing: isEnable }"> </canvas>
   </div>
 </template>
 
@@ -18,6 +8,7 @@
 import { createNamespacedHelpers } from "vuex";
 import { Item } from "awoo-core";
 import TileComponent from "./TileComponent.vue";
+import Canvas from "../lib/renderer/Canvas";
 
 const { mapGetters } = createNamespacedHelpers("editor");
 
@@ -39,6 +30,20 @@ export default {
       const symbol = "symbol-" + this.selectedType + "-" + this.selectedId;
       newVar[symbol] = this.isEnable;
       return newVar;
+    }
+  },
+  data() {
+    return {
+      canvas: new Canvas({
+        pixelSize: 22,
+        debug: false
+      })
+    };
+  },
+  watch: {
+    world() {
+      console.log("need rerender");
+      this.canvas.render(this.world);
     }
   },
   methods: {
@@ -65,7 +70,10 @@ export default {
       item.removeSelf();
     }
   },
-  mounted() {}
+  mounted() {
+    this.canvas.bind(this.$refs.world);
+    this.canvas.render(this.world);
+  }
 };
 </script>
 
