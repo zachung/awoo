@@ -1,0 +1,45 @@
+.chat-panel {
+  position: absolute;
+  bottom: 5em;
+  left: 2em;
+  padding: 0 1em 1em;
+  margin-bottom: 1em;
+  border: 1px solid transparent;
+  border-radius: 0.5em;
+
+  h4 {
+    position: absolute;
+    display: inline-block;
+    margin-top: -0.5em;
+    background-color: white;
+    padding: 0 0.3em;
+  }
+
+  &.chatting {
+    border: 1px solid gray;
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .messages {
+    max-height: 10em;
+    max-width: 20em;
+    overflow: auto;
+    padding-left: 1em;
+
+    li {
+      list-style: none;
+    }
+
+    .info {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  }
+
+  .scroll-to-here {
+    visibility: hidden;
+  }
+}

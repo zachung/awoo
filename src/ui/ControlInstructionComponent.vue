@@ -1,5 +1,5 @@
 <template>
-  <div class="control-instruction">
+  <div class="control-instruction popup-window" v-show="isControlShow">
     <div>
       <label>Move</label>
       <pre class="hotkey">A</pre>
@@ -18,21 +18,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  name: "ControlInstructionComponent"
+  computed: {
+    ...mapGetters("ui", ["isControlShow"])
+  },
 };
 </script>
 
-<style scoped>
-.control-instruction {
-  padding: 1em;
-}
-.hotkey {
-  display: inline-block;
-  background-color: #f0f0f0;
-  font-family: monospace;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  padding: 0 5px;
-}
-</style>
+<style scoped></style>

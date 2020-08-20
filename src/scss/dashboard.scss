@@ -1,11 +1,31 @@
 .dashboard {
   position: absolute;
+  max-height: 100vh;
+  overflow: scroll;
+  top: 0;
   right: 0;
   display: inline-block;
   padding: 0.5em;
   border: 5px ridge gray;
   z-index: 1;
   background-color: rgba(255, 255, 255, 0.9);
+
+  .status-panel {
+    .player-property {
+      list-style: none;
+      padding-left: 0;
+      font-family: monospace;
+
+      label {
+        width: 5em;
+        display: inline-block;
+      }
+    }
+  }
+
+  .player-container {
+    margin: 0;
+  }
 
   .symbol-panel {
     display: inline-grid;

@@ -74,14 +74,20 @@ class Controller {
     keyboardJS.bind('enter', e => {
       e.preventDefault()
       this.chat()
-      this.chatElement.focus()
+      this.onChating()
     })
     keyboardJS.bind('/', e => {
       e.preventDefault()
       this.chat()
-      this.chatElement.value = '/'
-      this.chatElement.focus()
+      this.onChating('/')
     })
+  }
+
+  bindHelp (keyDown, keyUp) {
+    const preContext = keyboardJS.getContext()
+    keyboardJS.setContext('in-game')
+    keyboardJS.bind('h', keyDown, keyUp)
+    keyboardJS.setContext(preContext)
   }
 
   startMove () {
@@ -133,8 +139,8 @@ class Controller {
     })
   }
 
-  registerChatElement (chatElement) {
-    this.chatElement = chatElement
+  registerChatElement (cb) {
+    this.onChating = cb
   }
 
   chat () {

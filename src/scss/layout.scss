@@ -24,3 +24,11 @@ footer {
   /* 展開footer寬度 */
   width: 100%;
 }
+
+.popup-window {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 0 1em 1em;
+  margin-bottom: 1em;
+  background: rgba(255, 255, 255, 0.9);
+}

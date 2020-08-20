@@ -6,13 +6,8 @@
         v-if="game.isOn"
       ></world-component>
       <connect-component v-else :game="game" @start="start"></connect-component>
-      <dashboard-component
-        class="dashboard"
-        :game="game"
-        :player="game.player"
-      ></dashboard-component>
     </div>
-    <control-instruction-component></control-instruction-component>
+    <ui-component :game="game" :player="game.player"></ui-component>
     <footer-component></footer-component>
   </div>
 </template>
@@ -20,22 +15,23 @@
 <script>
 import Game from "./lib/Game";
 import CanvasWorldComponent from "./ui/CanvasWorldComponent.vue";
-import DashboardComponent from "./ui/DashboardComponent.vue";
 import FooterComponent from "./ui/FooterComponent.vue";
 import ConnectComponent from "./ui/ConnectComponent.vue";
-import ControlInstructionComponent from "./ui/ControlInstructionComponent.vue";
+import UiComponent from "./ui/UiComponent.vue";
 import { ServerHost, Env } from "./lib/Env";
 
 export default {
   components: {
     ConnectComponent,
     WorldComponent: CanvasWorldComponent,
-    DashboardComponent,
     FooterComponent,
-    ControlInstructionComponent
+    UiComponent
   },
   data() {
-    const viewSize = Math.floor(window.innerWidth / 20);
+    const viewSize = Math.min(
+      Math.floor(document.body.clientWidth / 20),
+      Math.floor(document.body.clientHeight / 20)
+    );
     const delta = Math.floor(-viewSize / 2);
     const game = new Game({
       viewSize,
