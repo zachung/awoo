@@ -58,7 +58,7 @@ export default {
     return {
       Types,
       message: "",
-      logs: [{ level: "info", message: "press 'H' for help" }],
+      logs: [],
       preMessages: [],
       selectedMessageInx: 0,
       maxKeepMsgCount: 50,

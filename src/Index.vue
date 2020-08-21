@@ -5,7 +5,12 @@
         :world="game.stage.map"
         v-if="game.isOn"
       ></world-component>
-      <connect-component v-else :game="game" @start="start"></connect-component>
+      <connect-component
+        v-else
+        :game="game"
+        @start="start"
+        ref="connectComponent"
+      ></connect-component>
     </div>
     <ui-component :game="game" :player="game.player"></ui-component>
     <footer-component></footer-component>
@@ -52,7 +57,11 @@ export default {
     this.game.connect(ServerHost, () => {
       if (Env === "dev") {
         this.start("brian", () => {});
+        return;
       }
+      this.$nextTick(() => {
+        this.$refs.connectComponent.focusNameInput();
+      });
     });
   }
 };
