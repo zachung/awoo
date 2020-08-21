@@ -40,7 +40,6 @@ export default {
   },
   watch: {
     world() {
-      console.log("need rerender");
       this.canvas.render(this.world);
     }
   },
