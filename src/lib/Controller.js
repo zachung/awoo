@@ -1,4 +1,5 @@
 import keyboardJS from 'keyboardjs'
+import store from '../store/store'
 
 const UP = Symbol('up')
 const DOWN = Symbol('down')
@@ -80,6 +81,14 @@ class Controller {
       e.preventDefault()
       this.chat()
       this.onChating('/')
+    })
+    keyboardJS.bind(['h'], e => {
+      e.preventDefault()
+      store.dispatch('ui/setControlShow', !store.getters['ui/isControlShow'])
+    })
+    keyboardJS.bind('f3', e => {
+      e.preventDefault()
+      store.dispatch('ui/setDashboardShow', !store.getters['ui/isDashboardShow'])
     })
   }
 

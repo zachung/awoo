@@ -2,7 +2,8 @@ const editor = {
   namespaced: true,
   state: {
     isChatKeying: false,
-    isControlShow: false
+    isControlShow: false,
+    isDashboardShow: false
   },
   getters: {
     isChatKeying (state) {
@@ -10,6 +11,9 @@ const editor = {
     },
     isControlShow (state) {
       return state.isControlShow
+    },
+    isDashboardShow (state) {
+      return state.isDashboardShow
     }
   },
   actions: {
@@ -18,6 +22,9 @@ const editor = {
     },
     setControlShow ({ commit }, isShow) {
       commit('setControlShow', isShow)
+    },
+    setDashboardShow ({ commit }, isShow) {
+      commit('setDashboardShow', isShow)
     }
   },
   mutations: {
@@ -26,6 +33,9 @@ const editor = {
     },
     setControlShow (state, isShow) {
       state.isControlShow = isShow
+    },
+    setDashboardShow (state, isShow) {
+      state.isDashboardShow = isShow
     }
   }
 }

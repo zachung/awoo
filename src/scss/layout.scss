@@ -10,6 +10,14 @@ body {
 .container {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
+  width: 100vw;
+  height: 100vh;
+
+  .connect-container {
+    margin: 0 2em;
+    justify-self: center;
+    align-self: center;
+  }
 }
 .no-select {
   @include user_select(none);

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div style="float: right">
-      <button v-if="!isShowDashboard" @click="isShowDashboard = true">
+      <button v-if="!isDashboardShow" @click="setDashboardShow(true)">
         show
       </button>
-      <button v-else @click="isShowDashboard = false">hide</button>
+      <button v-else @click="setDashboardShow(false)">hide</button>
     </div>
-    <div v-if="isShowDashboard">
+    <div v-if="isDashboardShow">
       <div class="status-panel popup-window">
         <h4>Status</h4>
         <div v-if="game.isOn">current players: {{ game.currentOnline }}</div>
@@ -75,17 +75,18 @@ export default {
     player: Object
   },
   computed: {
-    ...mapGetters("editor", ["isEnable"])
+    ...mapGetters("editor", ["isEnable"]),
+    ...mapGetters("ui", ["isDashboardShow"])
   },
   data() {
     return {
-      isShowDashboard: false,
       isSubscribed: this.game.serviceWorkerRegister.isSubscribed,
       switchingSubscribe: false
     };
   },
   methods: {
     ...mapActions("editor", ["setEnable"]),
+    ...mapActions("ui", ["setDashboardShow"]),
     save() {
       this.game.save(chunk => {
         const exportObj = chunk.export();

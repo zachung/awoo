@@ -52,11 +52,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.connect-container {
-  margin: 0 2em;
-}
-.server-list li {
-  margin-bottom: .5em;
-}
-</style>
+<style scoped></style>

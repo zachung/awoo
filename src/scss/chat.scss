@@ -1,3 +1,5 @@
+@import "vendor";
+
 .chat-panel {
   position: absolute;
   bottom: 5em;
@@ -25,6 +27,7 @@
     max-width: 20em;
     overflow: auto;
     padding-left: 1em;
+    @include user_select(text);
 
     li {
       list-style: none;

@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import ChatComponent from "./ChatComponent.vue";
 import ControlInstructionComponent from "./ControlInstructionComponent.vue";
 import DashboardComponent from "./DashboardComponent.vue";
@@ -25,19 +24,6 @@ export default {
   props: {
     game: Object,
     player: Object
-  },
-  methods: {
-    ...mapActions("ui", ["setControlShow"])
-  },
-  mounted() {
-    this.game.controller.bindHelp(
-      e => {
-        this.setControlShow(true);
-      },
-      e => {
-        this.setControlShow(false);
-      }
-    );
   }
 };
 </script>

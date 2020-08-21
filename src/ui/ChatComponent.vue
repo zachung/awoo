@@ -14,7 +14,11 @@
       </template>
       <li class="scroll-to-here">&nbsp;</li>
     </ul>
-    <label v-show="player">
+    <label
+      id="message_box"
+      v-show="player"
+      :style="{ visibility: isChatKeying ? 'visible' : 'hidden' }"
+    >
       >
       <input
         v-model="message"
@@ -102,19 +106,24 @@ export default {
       this.message = this.preMessages[this.selectedMessageInx];
     },
     chatFocus() {
-      this.setChatKeying(true);
       this.game.controller.chat();
     },
     chatBlur() {
       this.game.controller.game();
       this.setChatKeying(false);
+    },
+    switchToKeyingMode(msg = "") {
+      this.setChatKeying(true);
+      this.$nextTick(() => {
+        this.$refs.messageBox.value = msg;
+        this.$refs.messageBox.focus();
+      });
     }
   },
   mounted() {
     Messages.onLogging(log => this.pushLog(log));
     this.game.controller.registerChatElement(msg => {
-      this.$refs.messageBox.value = msg;
-      this.$refs.messageBox.focus();
+      this.switchToKeyingMode(msg);
     });
   }
 };
