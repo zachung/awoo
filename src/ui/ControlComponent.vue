@@ -6,7 +6,17 @@
 import interact from "interactjs";
 import keyboardJS from "keyboardjs";
 
-const Threshold = 50;
+const Threshold = 0;
+const directions = [
+  [-1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
+  [1, 0],
+  [1, -1],
+  [0, -1],
+  [-1, -1]
+];
 
 export default {
   name: "ControlComponent",
@@ -17,32 +27,32 @@ export default {
         start(event) {
           position.x = 0;
           position.y = 0;
-          console.log(event.type, event.target);
         },
         move(event) {
           position.x += event.dx;
           position.y += event.dy;
+          // (1 ~ 360) + 45/2
+          const angle = (Math.atan2(-position.y, position.x) * 180) / Math.PI;
+          // 0, 1,  2, 3,  4, 5,  6, 7
+          // w, ws, s, es, e, en, n, nw
+          let direction = Math.floor((angle + 180 + 22.5) / 45);
+          const [x, y] = directions[direction === 8 ? 0 : direction];
 
           keyboardJS.releaseAllKeys();
-          if (Math.abs(position.x) > Threshold) {
-            if (position.x > 0) {
-              // right
-              keyboardJS.pressKey("d", event);
-            } else {
-              // left
-              keyboardJS.pressKey("a", event);
-            }
+          if (x === 1) {
+            // right
+            keyboardJS.pressKey("d", event);
+          } else if (x === -1) {
+            // left
+            keyboardJS.pressKey("a", event);
           }
-          if (Math.abs(position.y) > Threshold) {
-            if (position.y > 0) {
-              // down
-              keyboardJS.pressKey("s", event);
-            } else {
-              // up
-              keyboardJS.pressKey("w", event);
-            }
+          if (y === 1) {
+            // down
+            keyboardJS.pressKey("s", event);
+          } else if (y === -1) {
+            // up
+            keyboardJS.pressKey("w", event);
           }
-          // event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
         },
         end(event) {
           keyboardJS.releaseAllKeys(event);
@@ -58,8 +68,8 @@ export default {
   display: grid;
   position: absolute;
   bottom: 0;
-  width: 12em;
-  height: 12em;
+  width: 8em;
+  height: 8em;
   padding: 1em;
   margin: 0 auto;
   box-sizing: border-box;
