@@ -1,5 +1,9 @@
 <template>
-  <div class="chat-panel" :class="{ chatting: isChatKeying }">
+  <div
+    class="chat-panel"
+    :class="{ chatting: isChatKeying }"
+    @click.prevent="switchToKeyingMode()"
+  >
     <h4>Chat</h4>
     <ul class="messages">
       <template v-for="log in logs">
@@ -7,10 +11,12 @@
           <span
             class="name"
             :class="{ 'is-self': log.name === player.props.name }"
-            >{{ log.name }}</span
-          >: {{ log.message }}
+          >
+            [{{ log.name }}]
+          </span>
+          : {{ log.message }}
         </li>
-        <li v-else :class="log.level">[{{ log.level }}]{{ log.message }}</li>
+        <li v-else :class="log.level">{{ log.message }}</li>
       </template>
       <li class="scroll-to-here">&nbsp;</li>
     </ul>
@@ -115,7 +121,9 @@ export default {
     switchToKeyingMode(msg = "") {
       this.setChatKeying(true);
       this.$nextTick(() => {
-        this.$refs.messageBox.value = msg;
+        if (msg) {
+          this.$refs.messageBox.value = msg;
+        }
         this.$refs.messageBox.focus();
       });
     }
